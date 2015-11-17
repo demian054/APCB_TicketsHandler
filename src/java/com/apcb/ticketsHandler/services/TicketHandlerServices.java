@@ -35,8 +35,8 @@ import org.apache.log4j.Logger;
  *
  * @author Demian
  */
-@WebService(serviceName = "TicketHandlerService")
-public class TicketHandlerService {
+@WebService(serviceName = "TicketHandlerServices")
+public class TicketHandlerServices {
     private final static Logger log = Logger.getLogger(KIU_Conection.class);
     private Gson gson = new Gson();
     /**
