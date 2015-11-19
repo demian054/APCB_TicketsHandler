@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 @WebService(serviceName = "TicketHandlerServices")
 public class TicketHandlerServices {
     private final static Logger log = Logger.getLogger(KIU_Conection.class);
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
     /**
      * This is a sample web service operation
      */
@@ -47,7 +47,7 @@ public class TicketHandlerServices {
         Response response = new Response();
         try {
             Request request = new Request(strRequest); 
-            PropertiesReader prop = new PropertiesReader("KiuConnection");
+            PropertiesReader propKiu = new PropertiesReader("KiuConnection");
             /*Itinerary itinerary = new Itinerary();
 
             itinerary.setCabin(CabinTypeEnum.Economy);
@@ -68,13 +68,13 @@ public class TicketHandlerServices {
             
             Itinerary itinerary = (Itinerary) request.getBeam().getObject();
             
-            KIU_AirAvailRQ kIU_AirAvailRQ = KIUParserEntities.toAirAvailRQRequest(itinerary, prop);
+            KIU_AirAvailRQ kIU_AirAvailRQ = KIUParserEntities.toAirAvailRQRequest(itinerary, propKiu);
             KIU_Conection kIU_Conection = new KIU_Conection();
 
-            prop.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
-            KIU_AirAvailRS kIU_AirAvailRS = kIU_Conection.send(kIU_AirAvailRQ, prop);
+            propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
+            KIU_AirAvailRS kIU_AirAvailRS = kIU_Conection.send(kIU_AirAvailRQ, propKiu);
 
-            itinerary = KIUParserEntities.fromAirAvailRQRequest(itinerary, kIU_AirAvailRS, prop);
+            itinerary = KIUParserEntities.fromAirAvailRQRequest(itinerary, kIU_AirAvailRS, propKiu);
             
             log.info(new Gson().toJson(itinerary));
             response.setBeam(new Beam(itinerary, Itinerary.class));
