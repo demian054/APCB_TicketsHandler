@@ -7,7 +7,7 @@
 package com.apcb.ticketsHandler.utils;
 
 import com.apcb.utils.conection.ConectionHttpsURL;
-import com.apcb.utils.entities.PropertiesReader;
+import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIUMainRequest;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
@@ -61,9 +61,8 @@ public class KIU_Conection {
         Passanger passanger = new Passanger();
         passanger.setPassangerType(PassangerTypeEnum.ADT);
         passanger.setPassangerQuantity(1);
-        List<Passanger> passangers = new ArrayList<>();
-        passangers.add(passanger);
-        itinerary.setPassagers(passangers);
+
+        itinerary.putPassangers(passanger);
                                 
         KIU_AirAvailRQ avail = KIUParserEntities.toAirAvailRQRequest(itinerary, prop);
         KIU_Conection kIU_Conection = new KIU_Conection();

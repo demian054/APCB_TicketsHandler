@@ -21,7 +21,7 @@ import com.apcb.ticketsHandler.kiuEntities.TravelPreferences;
 import com.apcb.ticketsHandler.kiuEntities.TravelerInfoSummary;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
-import com.apcb.utils.entities.PropertiesReader;
+import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.utils.ticketsHandler.Enums.CabinTypeEnum;
 import com.apcb.utils.ticketsHandler.Enums.LocationEnum;
 import com.apcb.utils.ticketsHandler.Enums.MealCodeEnum;
@@ -114,7 +114,7 @@ public class KIUParserEntities {
                         TravelerInfoSummary travelerInfoSummary = new TravelerInfoSummary();
                                 AirTravelerAvail airTravelerAvail = new AirTravelerAvail();
                                     airTravelerAvail.setPassengerTypeQuantity(new ArrayList<>());
-                                            for (Passanger passanger : itinerary.getPassagers()){
+                                            for (Passanger passanger : itinerary.getPassangers()){
                                                PassengerTypeQuantity passengerTypeQuantity = new PassengerTypeQuantity();
                                                 passengerTypeQuantity.setCode(passanger.getPassangerType().getCode());
                                                 passengerTypeQuantity.setQuantity(passanger.getPassangerQuantity());
@@ -157,7 +157,7 @@ public class KIUParserEntities {
                     for (Byte code : flightSegment.getMeal().getMealCode().getBytes()){
                         meals.add(MealCodeEnum.getDescriptionByCode(code.toString()));  
                     }
-                    itineraryOption.setMealCode(meals);
+                    itineraryOption.setMealCode((String[]) meals.toArray());
                     itineraryOption.setMealServices(!(meals.isEmpty() || meals.contains(MealCodeEnum.NoMeals.getDescription())));
                     try {
                         itineraryOption.setDepartureLocationCode(LocationEnum.valueOf(flightSegment.getDepartureAirport().getLocationCode()));
@@ -170,7 +170,7 @@ public class KIUParserEntities {
                 }
             }
         }
-        itinerary.setDestinationOption(itineraryOptions);
+        itinerary.setDestinationOption((ItineraryOption[]) itineraryOptions.toArray());
         return itinerary;
     }
     
