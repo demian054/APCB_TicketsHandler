@@ -157,7 +157,7 @@ public class KIUParserEntities {
                     for (Byte code : flightSegment.getMeal().getMealCode().getBytes()){
                         meals.add(MealCodeEnum.getDescriptionByCode(code.toString()));  
                     }
-                    itineraryOption.setMealCode((String[]) meals.toArray());
+                    itineraryOption.setMealCode(meals.toArray(new String[meals.size()]));
                     itineraryOption.setMealServices(!(meals.isEmpty() || meals.contains(MealCodeEnum.NoMeals.getDescription())));
                     try {
                         itineraryOption.setDepartureLocationCode(LocationEnum.valueOf(flightSegment.getDepartureAirport().getLocationCode()));
@@ -170,7 +170,7 @@ public class KIUParserEntities {
                 }
             }
         }
-        itinerary.setDestinationOption((ItineraryOption[]) itineraryOptions.toArray());
+        itinerary.setDestinationOption((ItineraryOption[]) itineraryOptions.toArray(new ItineraryOption[itineraryOptions.size()]));
         return itinerary;
     }
     
