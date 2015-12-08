@@ -26,9 +26,11 @@ import com.apcb.utils.ticketsHandler.Enums.CabinTypeEnum;
 import com.apcb.utils.ticketsHandler.Enums.LocationEnum;
 import com.apcb.utils.ticketsHandler.Enums.MealCodeEnum;
 import com.apcb.utils.ticketsHandler.Enums.PassangerTypeEnum;
+import com.apcb.utils.ticketsHandler.entities.Travel;
 import com.apcb.utils.ticketsHandler.entities.Itinerary;
 import com.apcb.utils.ticketsHandler.entities.ItineraryOption;
 import com.apcb.utils.ticketsHandler.entities.Passanger;
+import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,7 +71,7 @@ public class KIUParserEntities {
         return date;
     }
   
-    public static KIU_AirAvailRQ toAirAvailRQRequest(Itinerary itinerary, PropertiesReader prop){
+    public static KIU_AirAvailRQ toAirAvailRequest(Travel travel, PropertiesReader prop){
            
            KIU_AirAvailRQ avail = new KIU_AirAvailRQ();
                         
@@ -79,7 +81,7 @@ public class KIUParserEntities {
                         avail.setVersion(prop.getProperty("Version", false));
                         avail.setSequenceNmbr(1);
                         avail.setPrimaryLangID(prop.getProperty("PrimaryLang", false));
-                        avail.setDirectFlightsOnly(itinerary.isDirectFlightsOnly());
+                        avail.setDirectFlightsOnly(travel.isDirectFlightsOnly());
                         avail.setMaxResponses(Integer.parseInt(prop.getProperty("MaxResponses", false)));
 
                         Pos pos = new Pos();
@@ -95,26 +97,27 @@ public class KIUParserEntities {
                             specificFlightInfo.setAirline(airline);
                     avail.setSpecificFlightInfo(specificFlightInfo);
                         AirItinerary origDesInfo = new AirItinerary();
-                            origDesInfo.setDepartureDateTime(toDateSring(itinerary.getDepartureDateTime(), prop, "DateTimeFormat"));
-                                Location origLocation = new Location();
-                                origLocation.setLocationCode(itinerary.getOriginLocationCode().getCode());
-                            origDesInfo.setOriginLocation(origLocation);
-                                Location destLocation = new Location();
-                                destLocation.setLocationCode(itinerary.getDestinationLocationCode().getCode());
-                            origDesInfo.setDestinationLocation(destLocation);
-                    avail.setOriginDestinationInformation(new ArrayList<>());        
-                    avail.getOriginDestinationInformation().add(origDesInfo);
-                    
+                        for(Itinerary itinerary:travel.getItinerary()){
+                                origDesInfo.setDepartureDateTime(toDateSring(itinerary.getDepartureDateTime(), prop, "DateTimeFormat"));
+                                    Location origLocation = new Location();
+                                    origLocation.setLocationCode(itinerary.getOriginLocationCode().getCode());
+                                origDesInfo.setOriginLocation(origLocation);
+                                    Location destLocation = new Location();
+                                    destLocation.setLocationCode(itinerary.getDestinationLocationCode().getCode());
+                                origDesInfo.setDestinationLocation(destLocation);
+                            avail.setOriginDestinationInformation(new ArrayList<>());        
+                            avail.getOriginDestinationInformation().add(origDesInfo);
+                        }
                         TravelPreferences travelPreferences = new TravelPreferences();
                                 CabinPref cabinPref = new CabinPref();
-                                cabinPref.setCabin(itinerary.getCabin().getDescription());
+                                cabinPref.setCabin(travel.getCabin().getDescription());
                             travelPreferences.setCabinPref(cabinPref);
                     avail.setTravelPreferences(travelPreferences);
                     
                         TravelerInfoSummary travelerInfoSummary = new TravelerInfoSummary();
                                 AirTravelerAvail airTravelerAvail = new AirTravelerAvail();
                                     airTravelerAvail.setPassengerTypeQuantity(new ArrayList<>());
-                                            for (Passanger passanger : itinerary.getPassangers()){
+                                            for (Passanger passanger : travel.getPassangers()){
                                                PassengerTypeQuantity passengerTypeQuantity = new PassengerTypeQuantity();
                                                 passengerTypeQuantity.setCode(passanger.getPassangerType().getCode());
                                                 passengerTypeQuantity.setQuantity(passanger.getPassangerQuantity());
@@ -125,16 +128,15 @@ public class KIUParserEntities {
         return avail;
     }
     
-    public static Itinerary fromAirAvailRQRequest(Itinerary itinerary, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop){
-        if (itinerary==null){
-            itinerary = new Itinerary();
-        }
-        List<ItineraryOption> itineraryOptions = new ArrayList<>();
-        
-        for (AirItinerary airItinerary:kIU_AirAvailRS.getOriginDestinationInformation()){  
-            if (airItinerary.getOriginDestinationOptions()!=null){
+    public static Travel fromAirAvailResponse(Travel travel, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop){
+        log.debug("Response from KIU :"+new Gson().toJson(kIU_AirAvailRS));
+        int itineraryNumber = 0;
+        for (AirItinerary airItinerary:kIU_AirAvailRS.getOriginDestinationInformation()){
+            Itinerary itinerary = new Itinerary();
+            List<ItineraryOption> itineraryOptions = new ArrayList<>();
+            if (airItinerary.getOriginDestinationOptions() != null && airItinerary.getOriginDestinationOptions().getOriginDestinationOption() != null){
                 for (OriginDestinationOption originDestinationOption:airItinerary.getOriginDestinationOptions().getOriginDestinationOption()){
-                
+                    
                     ItineraryOption itineraryOption = new ItineraryOption();
                     FlightSegment flightSegment = originDestinationOption.getFlightSegment();
                     itineraryOption.setAirEquipType(flightSegment.getEquipment().getAirEquipType());
@@ -168,10 +170,12 @@ public class KIUParserEntities {
                     
                     itineraryOptions.add(itineraryOption);
                 }
+                itinerary.putItineraryOption((ItineraryOption[]) itineraryOptions.toArray(new ItineraryOption[itineraryOptions.size()]));
             }
+            travel.putItinerary(itinerary);  
         }
-        itinerary.setDestinationOption((ItineraryOption[]) itineraryOptions.toArray(new ItineraryOption[itineraryOptions.size()]));
-        return itinerary;
+        //travel.setItinerary((ItineraryOption[]) itineraryOptions.toArray(new ItineraryOption[itineraryOptions.size()]));
+        return travel;
     }
     
     

@@ -108,7 +108,7 @@ public class KIU_AirAvailRQ {
     public Pos getPos() {
         return pos;
     }
-    @XmlElement
+    @XmlElement(name = "POS")
     public void setPos(Pos pos) {
         this.pos = pos;
     }
@@ -116,7 +116,7 @@ public class KIU_AirAvailRQ {
     public SpecificFlightInfo getSpecificFlightInfo() {
         return specificFlightInfo;
     }
-    @XmlElement
+    @XmlElement(name = "SpecificFlightInfo")
     public void setSpecificFlightInfo(SpecificFlightInfo specificFlightInfo) {
         this.specificFlightInfo = specificFlightInfo;
     }
@@ -124,7 +124,7 @@ public class KIU_AirAvailRQ {
     public List<AirItinerary> getOriginDestinationInformation() {
         return originDestinationInformation;
     }
-    @XmlElement
+    @XmlElement(name = "OriginDestinationInformation")
     public void setOriginDestinationInformation(List<AirItinerary> originDestinationInformation) {
         this.originDestinationInformation = originDestinationInformation;
     }
@@ -132,7 +132,7 @@ public class KIU_AirAvailRQ {
     public TravelPreferences getTravelPreferences() {
         return travelPreferences;
     }
-    @XmlElement
+    @XmlElement(name = "TravelPreferences")
     public void setTravelPreferences(TravelPreferences travelPreferences) {
         this.travelPreferences = travelPreferences;
     }
@@ -140,7 +140,7 @@ public class KIU_AirAvailRQ {
     public TravelerInfoSummary getTravelerInfoSummary() {
         return travelerInfoSummary;
     }
-    @XmlElement
+    @XmlElement(name = "TravelerInfoSummary")
     public void setTravelerInfoSummary(TravelerInfoSummary travelerInfoSummary) {
         this.travelerInfoSummary = travelerInfoSummary;
     }

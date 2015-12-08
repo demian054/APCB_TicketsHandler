@@ -19,7 +19,7 @@ import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.utils.entities.Request;
 import com.apcb.utils.entities.Response;
 import com.apcb.utils.ticketsHandler.Enums.MessagesTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Itinerary;
+import com.apcb.utils.ticketsHandler.entities.Travel;
 import com.google.gson.Gson;
 import java.io.IOException;
 import org.apache.log4j.LogManager;
@@ -39,9 +39,9 @@ public class APCBTicketsHandlerProcess {
         Response response = new Response();
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
 
-        Itinerary itinerary = gson.fromJson(request.getBeam().getObjectStr(), Itinerary.class);
+        Travel itinerary = gson.fromJson(request.getBeam().getObjectStr(), Travel.class);
 
-        KIU_AirAvailRQ kIU_AirAvailRQ = KIUParserEntities.toAirAvailRQRequest(itinerary, propKiu);
+        KIU_AirAvailRQ kIU_AirAvailRQ = KIUParserEntities.toAirAvailRequest(itinerary, propKiu);
 
         KIU_Conection kIU_Conection = new KIU_Conection();
         propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
@@ -50,13 +50,14 @@ public class APCBTicketsHandlerProcess {
              kIU_AirAvailRS = kIU_Conection.send(kIU_AirAvailRQ, propKiu);
         } catch (Exception e) {
             response.setMessage(new Message(MessagesTypeEnum.ErrorAccessExt_Kiu));
+            log.error(response.getMessage().getMsgDesc(), e);
             return response;
         }
-        itinerary = KIUParserEntities.fromAirAvailRQRequest(itinerary, kIU_AirAvailRS, propKiu);
+        itinerary = KIUParserEntities.fromAirAvailResponse(itinerary, kIU_AirAvailRS, propKiu);
         
         log.info(new Gson().toJson(itinerary));
         //response.setBeam(itinerary, Itinerary.class);
-        response.setBeam(new Beam(gson.toJson(itinerary), Itinerary.class.getName()));
+        response.setBeam(new Beam(gson.toJson(itinerary), Travel.class.getName()));
         response.setMessage(new Message(MessagesTypeEnum.Ok));
         return response;
     }

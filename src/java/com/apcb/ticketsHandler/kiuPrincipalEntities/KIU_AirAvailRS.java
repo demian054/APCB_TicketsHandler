@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */    
-@XmlRootElement(name="Root")
+@XmlRootElement(name="KIU_AirAvailRS")
 public class KIU_AirAvailRS {
     
 /****************XmlAttribute*****************/

@@ -21,7 +21,7 @@ import com.apcb.utils.ticketsHandler.Enums.CabinTypeEnum;
 import com.apcb.utils.ticketsHandler.Enums.LocationEnum;
 import com.apcb.utils.ticketsHandler.Enums.MessagesTypeEnum;
 import com.apcb.utils.ticketsHandler.Enums.PassangerTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Itinerary;
+import com.apcb.utils.ticketsHandler.entities.Travel;
 import com.apcb.utils.ticketsHandler.entities.Passanger;
 import com.google.gson.Gson;
 import java.util.ArrayList;

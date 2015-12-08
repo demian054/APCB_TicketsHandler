@@ -45,8 +45,67 @@ public class KUIXmlExamples {
         "</KIU_AirAvailRQ>";
     
 
-    public static String strXmlAirAvailRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"  standalone=\"yes\" ?> " +
-        "<Root EchoToken=\"1\" TimeStamp=\"2015-03-06T17:38:05+00:00\" " +
+    public static String strXmlAirAvailRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+"<KIU_AirAvailRS EchoToken=\"1\" TimeStamp=\"2015-03-06T17:38:05+00:00\" Target=\"Testing\" Version=\"3.0\" SequenceNmbr=\"1\"> " +
+"   <Success /> " +
+"   <OriginDestinationInformation> " +
+"      <DepartureDateTime>2015-03-09</DepartureDateTime> " +
+"      <OriginLocation>AEP</OriginLocation> " +
+"      <DestinationLocation>COR</DestinationLocation> " +
+"      <OriginDestinationOptions> " +
+"         <OriginDestinationOption> " +
+"            <FlightSegment DepartureDateTime=\"2015-03-09 08:00:00\" ArrivalDateTime=\"2015-03-09 10:55:00\" StopQuantity=\"1\" FlightNumber=\"3130\" JourneyDuration=\"02:55:00\"> " +
+"               <DepartureAirport LocationCode=\"CCS\" /> " +
+"               <ArrivalAirport LocationCode=\"CUM\" /> " +
+"               <Equipment AirEquipType=\"SF3\" /> " +
+"               <MarketingAirline CompanyShortName=\"XX\" /> " +
+"               <Meal MealCode=\"S\" /> " +
+"               <MarketingCabin CabinType=\"Economy\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"Y\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"M\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"L\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"            </FlightSegment> " +
+"         </OriginDestinationOption> " +
+"         <OriginDestinationOption> " +
+"            <FlightSegment DepartureDateTime=\"2015-03-09 09:00:00\" ArrivalDateTime=\"2015-03-09 12:59:00\" StopQuantity=\"1\" FlightNumber=\"1000\" JourneyDuration=\"03:59:00\"> " +
+"               <DepartureAirport LocationCode=\"CCS\" /> " +
+"               <ArrivalAirport LocationCode=\"CUM\" /> " +
+"               <Equipment AirEquipType=\"DC9\" /> " +
+"               <MarketingAirline CompanyShortName=\"XX\" /> " +
+"               <Meal MealCode=\"S\" /> " +
+"               <MarketingCabin CabinType=\"Economy\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"Y\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"B\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"K\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"L\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"            </FlightSegment> " +
+"         </OriginDestinationOption> " +
+"      </OriginDestinationOptions> " +
+"   </OriginDestinationInformation> " +
+"   <OriginDestinationInformation> " +
+"      <DepartureDateTime>2015-03-12</DepartureDateTime> " +
+"      <OriginLocation>COR</OriginLocation> " +
+"      <DestinationLocation>AEP</DestinationLocation> " +
+"      <OriginDestinationOptions> " +
+"         <OriginDestinationOption> " +
+"            <FlightSegment DepartureDateTime=\"2015-03-12 10:00:00\" ArrivalDateTime=\"2015-03-12 11:00:00\" StopQuantity=\"0\" FlightNumber=\"455\" JourneyDuration=\"01:00:00\"> " +
+"               <DepartureAirport LocationCode=\"CCS\" /> " +
+"               <ArrivalAirport LocationCode=\"CUM\" /> " +
+"               <Equipment AirEquipType=\"SF3\" /> " +
+"               <MarketingAirline CompanyShortName=\"XX\" /> " +
+"               <Meal MealCode=\"-\" /> " +
+"               <MarketingCabin CabinType=\"Economy\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"Y\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"B\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"H\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"               <BookingClassAvail ResBookDesigCode=\"N\" ResBookDesigQuantity=\"9\" RPH=\"1\" /> " +
+"            </FlightSegment> " +
+"         </OriginDestinationOption> " +
+"      </OriginDestinationOptions> " +
+"   </OriginDestinationInformation> " +
+"</KIU_AirAvailRS>";
+    /*<?xml version=\"1.0\" encoding=\"UTF-8\"  standalone=\"yes\" ?> " +
+        "<KIU_AirAvailRS EchoToken=\"1\" TimeStamp=\"2015-03-06T17:38:05+00:00\" " +
         "Target=\"Testing\" Version=\"3.0\" SequenceNmbr=\"1\"> " +
         "<Success/> " +
         "<OriginDestinationInformation> " +
@@ -119,7 +178,7 @@ public class KUIXmlExamples {
         "</OriginDestinationOption> " +
         "</OriginDestinationOptions> " +
         "</OriginDestinationInformation> " +
-        "</Root>";
+        "</KIU_AirAvailRS>";*/
     
     public static String strXmlAirPriceRQ = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
         "<KIU_AirPriceRQ EchoToken=\"1\" TimeStamp=\"2015-03-09T16:49:52+00:00\" " +

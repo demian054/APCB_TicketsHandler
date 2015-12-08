@@ -12,16 +12,8 @@ import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIUMainRequest;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
 import com.apcb.utils.ticketsHandler.Enums.CabinTypeEnum;
-import com.apcb.utils.ticketsHandler.Enums.LocationEnum;
-import com.apcb.utils.ticketsHandler.Enums.PassangerTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Itinerary;
-import com.apcb.utils.ticketsHandler.entities.Passanger;
+import com.apcb.utils.ticketsHandler.entities.Travel;
 import com.apcb.utils.xml.XmlParser;
-import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import org.apache.log4j.Logger;
 
 
@@ -39,20 +31,23 @@ public class KIU_Conection {
         //TestConection http = new TestConection();
         log.info(request.toString());
 
+        if (prop.getProperty("ConectKiu",false).equalsIgnoreCase("false")){
+            prop.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
+        }
         ConectionHttpsURL con = new ConectionHttpsURL(prop);
         String KIUresp = con.sendPost(request.toString());
-
+                
         log.info(KIUresp); 
         return (KIU_AirAvailRS) XmlParser.fromXML(KIUresp, KIU_AirAvailRS.class);    
     }
     
     public static void main(String[] args) throws Exception {
         PropertiesReader prop = new PropertiesReader("KiuConnection");
-        Itinerary itinerary = new Itinerary();
+        Travel itinerary = new Travel();
         
         itinerary.setCabin(CabinTypeEnum.Economy);
-  
-        itinerary.setDepartureDateTime(Calendar.getInstance());
+        
+        /*itinerary.setDepartureDateTime(Calendar.getInstance());
         itinerary.setDestinationLocationCode(LocationEnum.CCS);
         itinerary.setDirectFlightsOnly(true);
         
@@ -72,6 +67,6 @@ public class KIU_Conection {
         
         itinerary = KIUParserEntities.fromAirAvailRQRequest(itinerary, kIU_AirAvailRS, prop);
         
-        log.info(new Gson().toJson(itinerary));
+        log.info(new Gson().toJson(itinerary));*/
     }
 }

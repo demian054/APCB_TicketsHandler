@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement
+@XmlRootElement(name="POS")
 public class Pos {
     private Source Source;
 
