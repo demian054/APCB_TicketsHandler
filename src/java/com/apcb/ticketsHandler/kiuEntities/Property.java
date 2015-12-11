@@ -17,7 +17,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Property {
     private String Code;
     private String Type;
+    //no borrar lo necesita el parse a xml
+    public Property() {}
 
+    public Property(String Code, String Type) {
+        this.Code = Code;
+        this.Type = Type;
+    }
+
+    public Property(String Type) {
+        this.Type = Type;
+    }
+    
     public String getCode() {
         return Code;
     }

@@ -20,25 +20,19 @@ import org.apache.log4j.Logger;
 public class KIU_Conection {
     private final static Logger log = Logger.getLogger(KIU_Conection.class);
     
-    public KIU_AirAvailRS send(KIU_AirAvailRQ avail, PropertiesReader prop) throws Exception{
+    public <T> T send(Object avail, PropertiesReader prop, Class inObjClass, Class<T> outObjClass) throws Exception{
         
-        KIUMainRequest request = new KIUMainRequest(KIU_AirAvailRQ.class);        
+        KIUMainRequest request = new KIUMainRequest(inObjClass);        
         request.setUser(prop.getProperty("User"));
         request.setPassword(prop.getProperty("Password"));
         request.setRequest(avail);
-
-
         //TestConection http = new TestConection();
         log.info(request.toString());
-
-        if (prop.getProperty("ConectKiu",false).equalsIgnoreCase("false")){
-            prop.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
-        }
         ConectionHttpsURL con = new ConectionHttpsURL(prop);
         String KIUresp = con.sendPost(request.toString());
                 
-        log.info(KIUresp); 
-        return (KIU_AirAvailRS) XmlParser.fromXML(KIUresp, KIU_AirAvailRS.class);    
+        log.info("KUI literal response: "+KIUresp); 
+        return (T) XmlParser.fromXML(KIUresp, outObjClass);    
     }
     
     public static void main(String[] args) throws Exception {
