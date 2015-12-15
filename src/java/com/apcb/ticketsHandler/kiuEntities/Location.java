@@ -20,6 +20,14 @@ public class Location {
     private String LocationCode;
     private String AltLocationCode;
 
+    public Location(String LocationCode) {
+        this.LocationCode = LocationCode;
+        this.AltLocationCode = LocationCode;
+    }
+
+    public Location() {
+    }
+    
     public String getLocationCode() {
         return LocationCode;
     }
@@ -27,8 +35,7 @@ public class Location {
     public void setLocationCode(String locationCode) {
         this.LocationCode = locationCode;
     }
-    
-    
+     
     public String getAltLocationCode() {
         return AltLocationCode;
     }

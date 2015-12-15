@@ -9,6 +9,7 @@ package com.apcb.ticketsHandler.kiuPrincipalEntities;
 import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
 import com.apcb.ticketsHandler.kiuEntities.Pos;
 import com.apcb.ticketsHandler.kiuEntities.TravelerInfoSummary;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -78,7 +79,8 @@ public class KIU_AirPriceRQ {
     /****************XmlElements*****************/
     
     private Pos POS;
-    private AirItinerary AirItinerary;
+    private List<AirItinerary> AirItinerary;
+    
     private TravelerInfoSummary TravelerInfoSummary;
 
     public Pos getPOS() {
@@ -90,11 +92,11 @@ public class KIU_AirPriceRQ {
         this.POS = POS;
     }
 
-    public AirItinerary getAirItinerary() {
+    public List<AirItinerary> getAirItinerary() {
         return AirItinerary;
     }
-    @XmlElement(name = "AirItinerary")
-    public void setAirItinerary(AirItinerary AirItinerary) {
+
+    public void setAirItinerary(List<AirItinerary> AirItinerary) {
         this.AirItinerary = AirItinerary;
     }
 
