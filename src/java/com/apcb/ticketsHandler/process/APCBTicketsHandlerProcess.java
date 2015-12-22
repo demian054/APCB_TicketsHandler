@@ -21,7 +21,7 @@ import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.utils.entities.Request;
 import com.apcb.utils.entities.Response;
 import com.apcb.utils.ticketsHandler.Enums.MessagesTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Travel;
+import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
 import com.google.gson.Gson;
 import java.io.IOException;
 import org.apache.log4j.LogManager;
@@ -39,7 +39,7 @@ public class APCBTicketsHandlerProcess {
         
         Response response = new Response();
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
-        Travel itinerary = gson.fromJson(request.getBeam().getObjectStr(), Travel.class);
+        APCB_Travel itinerary = gson.fromJson(request.getBeam().getObjectStr(), APCB_Travel.class);
         KIU_AirAvailRQ kIU_AirAvailRQ = KIUParserEntities.toAirAvailRequest(itinerary, propKiu);
         KIU_Conection kIU_Conection = new KIU_Conection();
         propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirAvailRS);
@@ -53,7 +53,7 @@ public class APCBTicketsHandlerProcess {
         }
         itinerary = KIUParserEntities.fromAirAvailResponse(itinerary, kIU_AirAvailRS, propKiu);
         log.info(new Gson().toJson(itinerary));
-        response.setBeam(new Beam(gson.toJson(itinerary), Travel.class.getName()));
+        response.setBeam(new Beam(gson.toJson(itinerary), APCB_Travel.class.getName()));
         response.setMessage(new Message(MessagesTypeEnum.Ok));
         return response;
     }
@@ -62,7 +62,7 @@ public class APCBTicketsHandlerProcess {
         
         Response response = new Response();
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
-        Travel itinerary = gson.fromJson(request.getBeam().getObjectStr(), Travel.class);
+        APCB_Travel itinerary = gson.fromJson(request.getBeam().getObjectStr(), APCB_Travel.class);
         KIU_AirPriceRQ kIU_AirPriceRQ = KIUParserEntities.toKIU_AirPriceRequest(itinerary, propKiu);
         KIU_Conection kIU_Conection = new KIU_Conection();
         propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirPriceRS);
@@ -76,7 +76,7 @@ public class APCBTicketsHandlerProcess {
         }
         itinerary = KIUParserEntities.fromAirPriceResponse(itinerary, kIU_AirPriceRS, propKiu);
         log.info(new Gson().toJson(itinerary));
-        response.setBeam(new Beam(gson.toJson(itinerary), Travel.class.getName()));
+        response.setBeam(new Beam(gson.toJson(itinerary), APCB_Travel.class.getName()));
         response.setMessage(new Message(MessagesTypeEnum.Ok));
         return response;
     }

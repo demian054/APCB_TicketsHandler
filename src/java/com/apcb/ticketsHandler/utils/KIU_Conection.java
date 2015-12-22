@@ -12,7 +12,7 @@ import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIUMainRequest;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
 import com.apcb.utils.ticketsHandler.Enums.CabinTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Travel;
+import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
 import com.apcb.utils.xml.XmlParser;
 import org.apache.log4j.Logger;
 
@@ -37,7 +37,7 @@ public class KIU_Conection {
     
     public static void main(String[] args) throws Exception {
         PropertiesReader prop = new PropertiesReader("KiuConnection");
-        Travel itinerary = new Travel();
+        APCB_Travel itinerary = new APCB_Travel();
         
         itinerary.setCabin(CabinTypeEnum.Economy);
         

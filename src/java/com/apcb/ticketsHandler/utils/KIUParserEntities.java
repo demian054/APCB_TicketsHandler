@@ -31,10 +31,10 @@ import com.apcb.utils.ticketsHandler.Enums.ISOCurrencyEnum;
 import com.apcb.utils.ticketsHandler.Enums.LocationEnum;
 import com.apcb.utils.ticketsHandler.Enums.MealCodeEnum;
 import com.apcb.utils.ticketsHandler.Enums.PassangerTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.Travel;
-import com.apcb.utils.ticketsHandler.entities.Itinerary;
-import com.apcb.utils.ticketsHandler.entities.ItineraryOption;
-import com.apcb.utils.ticketsHandler.entities.Passanger;
+import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
+import com.apcb.utils.ticketsHandler.entities.APCB_Itinerary;
+import com.apcb.utils.ticketsHandler.entities.APCB_ItineraryOption;
+import com.apcb.utils.ticketsHandler.entities.APCB_Passenger;
 import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,7 +77,7 @@ public class KIUParserEntities {
         return date;
     }
 
-    public static KIU_AirAvailRQ toAirAvailRequest(Travel travel, PropertiesReader prop) {
+    public static KIU_AirAvailRQ toAirAvailRequest(APCB_Travel travel, PropertiesReader prop) {
 
         KIU_AirAvailRQ avail = new KIU_AirAvailRQ();
 
@@ -103,7 +103,7 @@ public class KIUParserEntities {
         specificFlightInfo.setAirline(airline);
         avail.setSpecificFlightInfo(specificFlightInfo);
         AirItinerary origDesInfo = new AirItinerary();
-        for (Itinerary itinerary : travel.getItinerary()) {
+        for (APCB_Itinerary itinerary : travel.getItinerary()) {
             origDesInfo.setDepartureDateTime(toDateSring(itinerary.getDepartureDateTime(), prop, "DateTimeFormat"));
             Location origLocation = new Location();
             origLocation.setLocationCode(itinerary.getOriginLocationCode().getCode());
@@ -123,7 +123,7 @@ public class KIUParserEntities {
         TravelerInfoSummary travelerInfoSummary = new TravelerInfoSummary();
         AirTravelerAvail airTravelerAvail = new AirTravelerAvail();
         airTravelerAvail.setPassengerTypeQuantity(new ArrayList<>());
-        for (Passanger passanger : travel.getPassangers()) {
+        for (APCB_Passenger passanger : travel.getPassangers()) {
             PassengerTypeQuantity passengerTypeQuantity = new PassengerTypeQuantity();
             passengerTypeQuantity.setCode(passanger.getPassangerType().getCode());
             passengerTypeQuantity.setQuantity(passanger.getPassangerQuantity());
@@ -134,16 +134,16 @@ public class KIUParserEntities {
         return avail;
     }
 
-    public static Travel fromAirAvailResponse(Travel travel, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop) {
+    public static APCB_Travel fromAirAvailResponse(APCB_Travel travel, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop) {
         log.debug("Response from KIU :" + new Gson().toJson(kIU_AirAvailRS));
         int itineraryNumber = 0;
         for (AirItinerary airItinerary : kIU_AirAvailRS.getOriginDestinationInformation()) {
-            Itinerary itinerary = travel.getItinerary()[itineraryNumber++];
-            List<ItineraryOption> itineraryOptions = new ArrayList<>();
+            APCB_Itinerary itinerary = travel.getItinerary()[itineraryNumber++];
+            List<APCB_ItineraryOption> itineraryOptions = new ArrayList<>();
             if (airItinerary.getOriginDestinationOptions() != null && airItinerary.getOriginDestinationOptions().getOriginDestinationOption() != null) {
                 for (OriginDestinationOption originDestinationOption : airItinerary.getOriginDestinationOptions().getOriginDestinationOption()) {
 
-                    ItineraryOption itineraryOption = new ItineraryOption();
+                    APCB_ItineraryOption itineraryOption = new APCB_ItineraryOption();
                     FlightSegment flightSegment = originDestinationOption.getFlightSegment();
                     itineraryOption.setAirEquipType(flightSegment.getEquipment().getAirEquipType());
                     itineraryOption.setArrivalDateTime(fromDateSring(flightSegment.getArrivalDateTime(), prop, "TimeStampFormat"));
@@ -176,7 +176,7 @@ public class KIUParserEntities {
 
                     itineraryOptions.add(itineraryOption);
                 }
-                itinerary.putItineraryOption((ItineraryOption[]) itineraryOptions.toArray(new ItineraryOption[itineraryOptions.size()]));
+                itinerary.putItineraryOption((APCB_ItineraryOption[]) itineraryOptions.toArray(new APCB_ItineraryOption[itineraryOptions.size()]));
             }
             //travel.putItinerary(itinerary);  
         }
@@ -184,7 +184,7 @@ public class KIUParserEntities {
         return travel;
     }
 
-    public static KIU_AirPriceRQ toKIU_AirPriceRequest(Travel travel, PropertiesReader prop) {
+    public static KIU_AirPriceRQ toKIU_AirPriceRequest(APCB_Travel travel, PropertiesReader prop) {
 
         KIU_AirPriceRQ price = new KIU_AirPriceRQ();
 
@@ -213,12 +213,12 @@ public class KIUParserEntities {
 
         List<AirItinerary> origDesInfos = new ArrayList<AirItinerary>();
         if (travel.getItinerary()!=null){
-            for (Itinerary itinerary : travel.getItinerary()) {
+            for (APCB_Itinerary itinerary : travel.getItinerary()) {
                 AirItinerary origDesInfo = new AirItinerary();
                 OriginDestinationOptions originDestinationOptions = new OriginDestinationOptions();
                 originDestinationOptions.setOriginDestinationOption(new ArrayList<OriginDestinationOption>());
                 if (itinerary.getItineraryOption()!=null){
-                    for (ItineraryOption itineraryOption : itinerary.getItineraryOption()) {
+                    for (APCB_ItineraryOption itineraryOption : itinerary.getItineraryOption()) {
                         OriginDestinationOption originDestinationOption = new OriginDestinationOption();
 
                         FlightSegment flightSegment = new FlightSegment();
@@ -245,7 +245,7 @@ public class KIUParserEntities {
             if (travel.getPassangers().length > 0) {
                 airTravelerAvail.setPassengerTypeQuantity(new ArrayList<>());
             }
-            for (Passanger passanger : travel.getPassangers()) {
+            for (APCB_Passenger passanger : travel.getPassangers()) {
                 PassengerTypeQuantity passengerTypeQuantity = new PassengerTypeQuantity();
                 passengerTypeQuantity.setCode(passanger.getPassangerType().getCode());
                 passengerTypeQuantity.setQuantity(passanger.getPassangerQuantity());
@@ -257,7 +257,7 @@ public class KIUParserEntities {
         return price;
     }
 
-    public static Travel fromAirPriceResponse(Travel travel, KIU_AirPriceRS kIU_AirPriceRS, PropertiesReader prop) {
+    public static APCB_Travel fromAirPriceResponse(APCB_Travel travel, KIU_AirPriceRS kIU_AirPriceRS, PropertiesReader prop) {
         /*log.debug("Response from KIU :"+new Gson().toJson(kIU_AirAvailRS));
          int itineraryNumber = 0;
          for (AirItinerary airItinerary:kIU_AirAvailRS.getOriginDestinationInformation()){
