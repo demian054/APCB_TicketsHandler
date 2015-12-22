@@ -95,7 +95,7 @@ public class KIU_AirPriceRQ {
     public List<AirItinerary> getAirItinerary() {
         return AirItinerary;
     }
-
+    @XmlElement(name = "AirItinerary")
     public void setAirItinerary(List<AirItinerary> AirItinerary) {
         this.AirItinerary = AirItinerary;
     }

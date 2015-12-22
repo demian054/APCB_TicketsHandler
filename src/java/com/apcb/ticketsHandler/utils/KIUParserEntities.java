@@ -212,27 +212,30 @@ public class KIUParserEntities {
         price.setPOS(pos);
 
         List<AirItinerary> origDesInfos = new ArrayList<AirItinerary>();
-        for (Itinerary itinerary : travel.getItinerary()) {
-            AirItinerary origDesInfo = new AirItinerary();
-            OriginDestinationOptions originDestinationOptions = new OriginDestinationOptions();
-            originDestinationOptions.setOriginDestinationOption(new ArrayList<OriginDestinationOption>());
-            for (ItineraryOption itineraryOption : itinerary.getItineraryOption()) {
-                OriginDestinationOption originDestinationOption = new OriginDestinationOption();
+        if (travel.getItinerary()!=null){
+            for (Itinerary itinerary : travel.getItinerary()) {
+                AirItinerary origDesInfo = new AirItinerary();
+                OriginDestinationOptions originDestinationOptions = new OriginDestinationOptions();
+                originDestinationOptions.setOriginDestinationOption(new ArrayList<OriginDestinationOption>());
+                if (itinerary.getItineraryOption()!=null){
+                    for (ItineraryOption itineraryOption : itinerary.getItineraryOption()) {
+                        OriginDestinationOption originDestinationOption = new OriginDestinationOption();
 
-                FlightSegment flightSegment = new FlightSegment();
-                flightSegment.setDepartureDateTime(toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
-                flightSegment.setArrivalDateTime(toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
-                flightSegment.setFlightNumber(itineraryOption.getFlightNumber());
-                flightSegment.setDepartureAirport(new Location(itineraryOption.getDepartureLocationCode().getCode()));
-                flightSegment.setResBookDesigCode(itineraryOption.getCabin().getBookingCode());
-                flightSegment.setArrivalAirport(new Location(itineraryOption.getArrivalLocationCode().getCode()));
-                flightSegment.setMarketingAirline(new Property(null, prop.getProperty("airlineCode", false)));
-                originDestinationOption.setFlightSegment(flightSegment);
-                originDestinationOptions.getOriginDestinationOption().add(originDestinationOption);
+                        FlightSegment flightSegment = new FlightSegment();
+                        flightSegment.setDepartureDateTime(toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setArrivalDateTime(toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setFlightNumber(itineraryOption.getFlightNumber());
+                        flightSegment.setDepartureAirport(new Location(itineraryOption.getDepartureLocationCode().getCode()));
+                        flightSegment.setResBookDesigCode(itineraryOption.getCabin().getBookingCode());
+                        flightSegment.setArrivalAirport(new Location(itineraryOption.getArrivalLocationCode().getCode()));
+                        flightSegment.setMarketingAirline(new Property(prop.getProperty("airlineCode", false), null));
+                        originDestinationOption.setFlightSegment(flightSegment);
+                        originDestinationOptions.getOriginDestinationOption().add(originDestinationOption);
+                    }
+                }
+                origDesInfo.setOriginDestinationOptions(originDestinationOptions);
+                origDesInfos.add(origDesInfo);
             }
-
-            origDesInfo.setOriginDestinationOptions(originDestinationOptions);
-            origDesInfos.add(origDesInfo);
         }
         price.setAirItinerary(origDesInfos);
 
