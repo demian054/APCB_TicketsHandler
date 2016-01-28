@@ -135,7 +135,7 @@ public class KIUParserEntities {
     }
 
     public static APCB_Travel fromAirAvailResponse(APCB_Travel travel, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop) {
-        log.debug("Response from KIU :" + new Gson().toJson(kIU_AirAvailRS));
+        log.info("Response from KIU :" + new Gson().toJson(kIU_AirAvailRS));
         int itineraryNumber = 0;
         for (AirItinerary airItinerary : kIU_AirAvailRS.getOriginDestinationInformation()) {
             APCB_Itinerary itinerary = travel.getItinerary()[itineraryNumber++];
@@ -258,7 +258,7 @@ public class KIUParserEntities {
     }
 
     public static APCB_Travel fromAirPriceResponse(APCB_Travel travel, KIU_AirPriceRS kIU_AirPriceRS, PropertiesReader prop) {
-        /*log.debug("Response from KIU :"+new Gson().toJson(kIU_AirAvailRS));
+        /*log.info("Response from KIU :"+new Gson().toJson(kIU_AirAvailRS));
          int itineraryNumber = 0;
          for (AirItinerary airItinerary:kIU_AirAvailRS.getOriginDestinationInformation()){
          Itinerary itinerary = new Itinerary();
