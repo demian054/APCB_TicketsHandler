@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Demian
  */
 @XmlRootElement(name = "PTC_FareBreakdown")
-class PTC_FareBreakdown {
+public class PTC_FareBreakdown {
     
     PassengerTypeQuantity PassengerTypeQuantity;
     ItemFare PassengerFare;  

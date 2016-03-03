@@ -13,16 +13,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement(name="Ticketing")
-public class Ticketing {
-    Integer TicketTimeLimit;
+@XmlRootElement(name="TravelerRefNumber")
+public class TravelerRefNumber {
+    private Integer RPH;
 
-    public Integer getTicketTimeLimit() {
-        return TicketTimeLimit;
+    public Integer getRPH() {
+        return RPH;
     }
-    @XmlAttribute(name = "TicketTimeLimit")
-    public void setTicketTimeLimit(Integer TicketTimeLimit) {
-        this.TicketTimeLimit = TicketTimeLimit;
+    
+    @XmlAttribute(name = "RPH")
+    public void setRPH(Integer RPH) {
+        this.RPH = RPH;
     }
+    
+    
     
 }

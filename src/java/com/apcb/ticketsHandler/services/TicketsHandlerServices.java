@@ -10,7 +10,7 @@ import com.apcb.ticketsHandler.process.APCBTicketsHandlerProcess;
 import com.apcb.utils.entities.Message;
 import com.apcb.utils.entities.Request;
 import com.apcb.utils.entities.Response;
-import com.apcb.utils.ticketsHandler.Enums.MessagesTypeEnum;
+import com.apcb.utils.ticketsHandler.enums.MessagesTypeEnum;
 import com.google.gson.Gson;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -46,6 +46,54 @@ public class TicketsHandlerServices {
     
     @WebMethod(operationName = "ticketAirPrice")
     public String ticketAirPrice(@WebParam(name = "request") String strRequest) {
+        Response response = new Response();
+        try {
+            Request request = new Request(strRequest); 
+            
+            APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
+            response = process.ticketAirPrice(request);
+            
+        } catch (Exception e) {
+            response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
+            log.error(response.getMessage().getMsgDesc(), e);
+        }
+        return gson.toJson(response);
+    }
+    
+    @WebMethod(operationName = "ticketAirReserv")
+    public String ticketAirReserv(@WebParam(name = "request") String strRequest) {
+        Response response = new Response();
+        try {
+            Request request = new Request(strRequest); 
+            
+            APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
+            response = process.ticketAirReserv(request);
+            
+        } catch (Exception e) {
+            response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
+            log.error(response.getMessage().getMsgDesc(), e);
+        }
+        return gson.toJson(response);
+    }
+    
+   @WebMethod(operationName = "ticketAirDemand")
+    public String ticketAirDemand(@WebParam(name = "request") String strRequest) {
+        Response response = new Response();
+        try {
+            Request request = new Request(strRequest); 
+            
+            APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
+            response = process.ticketAirPrice(request);
+            
+        } catch (Exception e) {
+            response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
+            log.error(response.getMessage().getMsgDesc(), e);
+        }
+        return gson.toJson(response);
+    }
+    
+    @WebMethod(operationName = "ticketAirCancel")
+    public String ticketAirCancel(@WebParam(name = "request") String strRequest) {
         Response response = new Response();
         try {
             Request request = new Request(strRequest); 

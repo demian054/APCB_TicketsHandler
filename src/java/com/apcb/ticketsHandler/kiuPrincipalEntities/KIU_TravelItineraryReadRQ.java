@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement(name="KIU_TravelItineraryReadRQ")
+@XmlRootElement(name="KIU_TravelItineraryReadRQ")  // incompleto
 public class KIU_TravelItineraryReadRQ {
     private int EchoToken;
     private String TimeStamp;
