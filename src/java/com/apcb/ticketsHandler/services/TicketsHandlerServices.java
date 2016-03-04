@@ -83,7 +83,7 @@ public class TicketsHandlerServices {
             Request request = new Request(strRequest); 
             
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
-            response = process.ticketAirPrice(request);
+            response = process.ticketAirDemand(request);
             
         } catch (Exception e) {
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
@@ -99,7 +99,7 @@ public class TicketsHandlerServices {
             Request request = new Request(strRequest); 
             
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
-            response = process.ticketAirPrice(request);
+            response = process.ticketAirCancel(request);
             
         } catch (Exception e) {
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));

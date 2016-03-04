@@ -6,7 +6,7 @@
 
 package com.apcb.ticketsHandler.kiuPrincipalEntities;
 
-
+import com.apcb.ticketsHandler.kiuEntities.TicketItemInfo;
 import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
 import com.apcb.ticketsHandler.kiuEntities.AirTraveler;
 import com.apcb.ticketsHandler.kiuEntities.Error;
@@ -24,8 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */    
-@XmlRootElement(name="KIU_AirPriceRS")
-public class KIU_AirBookRS {
+@XmlRootElement(name="KIU_AirDemandTicketRS")
+public class KIU_AirDemandTicketRS {
     
 /****************XmlAttribute*****************/
     private String EchoToken;
@@ -79,11 +79,10 @@ public class KIU_AirBookRS {
     
     private String Success;
     private Error Error;
-    
-    private List<AirItinerary> AirItinerary;
-    private List<AirTraveler> TravelerInfo;
+
     
     private UniqueId BookingReferenceID;
+    private TicketItemInfo TicketItemInfo;
 
     public Error getError() {
         return Error;
@@ -101,22 +100,6 @@ public class KIU_AirBookRS {
         this.Success = success;
     }
 
-    public List<AirItinerary> getAirItinerary() {
-        return AirItinerary;
-    }
-    @XmlElement(name = "AirItinerary")
-    public void setAirItinerary(List<AirItinerary> AirItinerary) {
-        this.AirItinerary = AirItinerary;
-    }
-
-    public List<AirTraveler> getTravelerInfo() {
-        return TravelerInfo;
-    }
-    @XmlElement(name = "TravelerInfo")
-    public void setTravelerInfo(List<AirTraveler> TravelerInfo) {
-        this.TravelerInfo = TravelerInfo;
-    }
-
     public UniqueId getBookingReferenceID() {
         return BookingReferenceID;
     }
@@ -125,7 +108,12 @@ public class KIU_AirBookRS {
         this.BookingReferenceID = BookingReferenceID;
     }
 
-    
+    public TicketItemInfo getTicketItemInfo() {
+        return TicketItemInfo;
+    }
+    @XmlElement(name = "TicketItemInfo")
+    public void setTicketItemInfo(TicketItemInfo TicketItemInfo) {
+        this.TicketItemInfo = TicketItemInfo;
+    }
   
-    
 }

@@ -6,21 +6,19 @@
 
 package com.apcb.ticketsHandler.kiuPrincipalEntities;
 
-import com.apcb.ticketsHandler.kiuEntities.TravelItinerary;
-import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
-import com.apcb.ticketsHandler.kiuEntities.Error;
+import com.apcb.ticketsHandler.kiuEntities.DemandTicketDetail;
 import com.apcb.ticketsHandler.kiuEntities.Pos;
-import com.apcb.ticketsHandler.kiuEntities.TravelerInfoSummary;
+import com.apcb.ticketsHandler.kiuEntities.Ticketing;
+import com.apcb.ticketsHandler.kiuEntities.UniqueId;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Demian
  */
-@XmlRootElement(name="KIU_TravelItineraryRS") // incompleto
-public class KIU_TravelItineraryRS {
+public class KIU_CancelRQ {
     private int EchoToken;
     private String TimeStamp;
     private String Target;
@@ -79,34 +77,40 @@ public class KIU_TravelItineraryRS {
     
     /****************XmlElements*****************/
     
-    private String Success;
-    private Error Error;
+    private Pos POS;
     
-    private TravelItinerary TravelItinerary;
-
-    public String getSuccess() {
-        return Success;
+    private List<UniqueId> UniqueID;
+    
+    private Ticketing Ticketing;
+    
+    
+    public Pos getPOS() {
+        return POS;
     }
-    @XmlElement(name = "TravelerInfoSummary")
-    public void setSuccess(String Success) {
-        this.Success = Success;
-    }
-
-    public Error getError() {
-        return Error;
-    }
-    @XmlElement(name = "TravelerInfoSummary")
-    public void setError(Error Error) {
-        this.Error = Error;
+    
+    @XmlElement(name = "POS")
+    public void setPOS(Pos POS) {
+        this.POS = POS;
     }
 
-    public TravelItinerary getTravelItinerary() {
-        return TravelItinerary;
+    public List<UniqueId> getUniqueID() {
+        return UniqueID;
     }
-    @XmlElement(name = "TravelerInfoSummary")
-    public void setTravelItinerary(TravelItinerary TravelItinerary) {
-        this.TravelItinerary = TravelItinerary;
+    @XmlElement(name = "UniqueID")
+    public void setUniqueID(List<UniqueId> UniqueID) {
+        this.UniqueID = UniqueID;
     }
 
+    public Ticketing getTicketing() {
+        return Ticketing;
+    }
+    @XmlElement(name = "Ticketing")
+    public void setTicketing(Ticketing Ticketing) {
+        this.Ticketing = Ticketing;
+    }
+
+    
+    
    
+    
 }

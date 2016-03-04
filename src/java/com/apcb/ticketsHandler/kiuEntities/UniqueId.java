@@ -13,24 +13,35 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement(name = "UniqueId")
+@XmlRootElement
 public class UniqueId {
-    int Type;
-    String ID;
+    private String Type;
+    private String ID;
+    private String CompanyName;
 
-    public int getType() {
+    public String getType() {
         return Type;
     }
-    @XmlAttribute(name = "Type")
-    public void setType(int Type) {
+    @XmlAttribute(name="Type")
+    public void setType(String Type) {
         this.Type = Type;
     }
 
     public String getID() {
         return ID;
     }
-    @XmlAttribute(name = "ID")
+    @XmlAttribute(name="ID")
     public void setID(String ID) {
         this.ID = ID;
-    } 
+    }
+
+    public String getCompanyName() {
+        return CompanyName;
+    }
+    
+    @XmlAttribute(name="CompanyName")
+    public void setCompanyName(String CompanyName) {
+        this.CompanyName = CompanyName;
+    }
+
 }

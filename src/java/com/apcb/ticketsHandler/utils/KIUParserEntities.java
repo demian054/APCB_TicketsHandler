@@ -5,62 +5,16 @@
  */
 package com.apcb.ticketsHandler.utils;
 
-import com.apcb.ticketsHandler.kiuEntities.AirTravelerAvail;
-import com.apcb.ticketsHandler.kiuEntities.Airline;
-import com.apcb.ticketsHandler.kiuEntities.CabinPref;
-import com.apcb.ticketsHandler.kiuEntities.Location;
-import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
-import com.apcb.ticketsHandler.kiuEntities.AirTraveler;
-import com.apcb.ticketsHandler.kiuEntities.CustoLoyalty;
-import com.apcb.ticketsHandler.kiuEntities.Document;
-import com.apcb.ticketsHandler.kiuEntities.FlightSegment;
-import com.apcb.ticketsHandler.kiuEntities.ItemFare;
-import com.apcb.ticketsHandler.kiuEntities.OriginDestinationOption;
-import com.apcb.ticketsHandler.kiuEntities.OriginDestinationOptions;
-import com.apcb.ticketsHandler.kiuEntities.PTC_FareBreakdown;
-import com.apcb.ticketsHandler.kiuEntities.PTC_FareBreakdowns;
-import com.apcb.ticketsHandler.kiuEntities.PassengerTypeQuantity;
-import com.apcb.ticketsHandler.kiuEntities.PersonName;
-import com.apcb.ticketsHandler.kiuEntities.Pos;
-import com.apcb.ticketsHandler.kiuEntities.PricedItineraries;
-import com.apcb.ticketsHandler.kiuEntities.PricedItinerary;
-import com.apcb.ticketsHandler.kiuEntities.Property;
-import com.apcb.ticketsHandler.kiuEntities.Source;
-import com.apcb.ticketsHandler.kiuEntities.SpecificFlightInfo;
-import com.apcb.ticketsHandler.kiuEntities.Tax;
-import com.apcb.ticketsHandler.kiuEntities.Telephone;
-import com.apcb.ticketsHandler.kiuEntities.Ticketing;
-import com.apcb.ticketsHandler.kiuEntities.TravelPreferences;
-import com.apcb.ticketsHandler.kiuEntities.TravelerInfo;
-import com.apcb.ticketsHandler.kiuEntities.TravelerInfoSummary;
-import com.apcb.ticketsHandler.kiuEntities.TravelerRefNumber;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirBookRQ;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirBookRS;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirPriceRQ;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirPriceRS;
+import com.apcb.ticketsHandler.kiuEntities.*;
+import com.apcb.ticketsHandler.kiuPrincipalEntities.*;
+import com.apcb.utils.paymentHandler.entities.APCB_PayMain;
 import com.apcb.utils.utils.PropertiesReader;
-import com.apcb.utils.ticketsHandler.enums.CabinTypeEnum;
-import com.apcb.utils.ticketsHandler.enums.ISOCountryEnum;
-import com.apcb.utils.ticketsHandler.enums.ISOCurrencyEnum;
-import com.apcb.utils.ticketsHandler.enums.LocationEnum;
-import com.apcb.utils.ticketsHandler.enums.MealCodeEnum;
-import com.apcb.utils.ticketsHandler.enums.PassangerTypeEnum;
-import com.apcb.utils.ticketsHandler.entities.APCB_Cost;
-import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
-import com.apcb.utils.ticketsHandler.entities.APCB_Itinerary;
-import com.apcb.utils.ticketsHandler.entities.APCB_ItineraryOption;
-import com.apcb.utils.ticketsHandler.entities.APCB_Passenger;
-import com.apcb.utils.ticketsHandler.entities.APCB_PassengerDetail;
-import com.apcb.utils.ticketsHandler.entities.APCB_Tax;
+import com.apcb.utils.ticketsHandler.enums.*;
+import com.apcb.utils.ticketsHandler.entities.*;
+import com.apcb.utils.utils.DateParser;
 import com.google.gson.Gson;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -72,36 +26,12 @@ public class KIUParserEntities {
 
     private final static Logger log = Logger.getLogger(KIUParserEntities.class);
 
-    public static String toDateSring(Calendar date, PropertiesReader prop, String Format) {
-        try {
-            DateFormat df = new SimpleDateFormat(prop.getProperty(Format, false));
-            return df.format(date.getTime());
-        } catch (Exception e) {
-            log.error("Error toDateString : " + Format, e);
-        }
-        return "Error toDateString : " + Format;
-    }
-
-    public static Calendar fromDateSring(String strDate, PropertiesReader prop, String Format) {
-        Calendar date = new GregorianCalendar();
-        if (!strDate.isEmpty()) {
-            try {
-                DateFormat df = new SimpleDateFormat(prop.getProperty(Format, false));
-                date.setTime(df.parse(strDate));
-                return date;
-            } catch (Exception e) {
-                log.error("Error fromDateSring : " + Format, e);
-            }
-        }
-        return date;
-    }
-    
     public static KIU_AirAvailRQ toAirAvailRequest(APCB_Travel travel, PropertiesReader prop) {
 
         KIU_AirAvailRQ avail = new KIU_AirAvailRQ();
 
         avail.setEchoToken(1);
-        avail.setTimeStamp(toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        avail.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
         avail.setTarget(prop.getProperty("Target", false));
         avail.setVersion(prop.getProperty("Version", false));
         avail.setSequenceNmbr(travel.getTransactionId());
@@ -129,7 +59,7 @@ public class KIUParserEntities {
         avail.setSpecificFlightInfo(specificFlightInfo);
         AirItinerary origDesInfo = new AirItinerary();
         for (APCB_Itinerary itinerary : travel.getItinerary()) {
-            origDesInfo.setDepartureDateTime(toDateSring(itinerary.getDepartureDateTime(), prop, "DateTimeFormat"));
+            origDesInfo.setDepartureDateTime(DateParser.toDateSring(itinerary.getDepartureDateTime(), prop, "DateTimeFormat"));
             Location origLocation = new Location();
             origLocation.setLocationCode(itinerary.getOriginLocationCode().getCode());
             origDesInfo.setOriginLocation(origLocation);
@@ -171,11 +101,11 @@ public class KIUParserEntities {
                     APCB_ItineraryOption itineraryOption = new APCB_ItineraryOption();
                     FlightSegment flightSegment = originDestinationOption.getFlightSegment();
                     itineraryOption.setAirEquipType(flightSegment.getEquipment().getAirEquipType());
-                    itineraryOption.setArrivalDateTime(fromDateSring(flightSegment.getArrivalDateTime(), prop, "TimeStampFormat"));
+                    itineraryOption.setArrivalDateTime(DateParser.fromDateSring(flightSegment.getArrivalDateTime(), prop, "TimeStampFormat"));
                     itineraryOption.setCabin(CabinTypeEnum.valueOf(flightSegment.getMarketingCabin().getCabinType()));
                     //TODO: hay una ambiguedad en la documentacion aparece como CompanyShortName en algunas partes
                     itineraryOption.setCompanyShortName(flightSegment.getMarketingAirline().getCode());
-                    itineraryOption.setDepartureDateTime(fromDateSring(flightSegment.getDepartureDateTime(), prop, "TimeStampFormat"));
+                    itineraryOption.setDepartureDateTime(DateParser.fromDateSring(flightSegment.getDepartureDateTime(), prop, "TimeStampFormat"));
                     //TODO: hay una ambiguedad en la documentacion aparece como atrubuto y en algunas partes como elemento
                     try {
                         itineraryOption.setArrivalLocationCode(LocationEnum.valueOf(flightSegment.getArrivalAirport().getLocationCode()));
@@ -214,7 +144,7 @@ public class KIUParserEntities {
         KIU_AirPriceRQ kIU_AirPriceRQ = new KIU_AirPriceRQ();
 
         kIU_AirPriceRQ.setEchoToken(1);
-        kIU_AirPriceRQ.setTimeStamp(toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        kIU_AirPriceRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
         kIU_AirPriceRQ.setTarget(prop.getProperty("Target", false));
         kIU_AirPriceRQ.setVersion(prop.getProperty("Version", false));
         kIU_AirPriceRQ.setSequenceNmbr(travel.getTransactionId());
@@ -247,8 +177,8 @@ public class KIUParserEntities {
                         OriginDestinationOption originDestinationOption = new OriginDestinationOption();
 
                         FlightSegment flightSegment = new FlightSegment();
-                        flightSegment.setDepartureDateTime(toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
-                        flightSegment.setArrivalDateTime(toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setDepartureDateTime(DateParser.toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setArrivalDateTime(DateParser.toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
                         flightSegment.setFlightNumber(itineraryOption.getFlightNumber());
                         flightSegment.setDepartureAirport(new Location(itineraryOption.getDepartureLocationCode().getCode()));
                         flightSegment.setResBookDesigCode(itineraryOption.getCabin().getBookingCode());
@@ -325,7 +255,6 @@ public class KIUParserEntities {
                                     }
                                     passenger.getDetailCost().setTaxes(detailTaxList); 
                                 }
-
                             }
                         }
                     }
@@ -335,14 +264,14 @@ public class KIUParserEntities {
                 }
             }
         }   
-           return travel;
+        return travel;
     }
 
     public static KIU_AirBookRQ toAirBookRequest(APCB_Travel travel, PropertiesReader prop) {
         KIU_AirBookRQ kIU_AirBookRQ = new KIU_AirBookRQ();
 
         kIU_AirBookRQ.setEchoToken(1);
-        kIU_AirBookRQ.setTimeStamp(toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        kIU_AirBookRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
         kIU_AirBookRQ.setTarget(prop.getProperty("Target", false));
         kIU_AirBookRQ.setVersion(prop.getProperty("Version", false));
         kIU_AirBookRQ.setSequenceNmbr(travel.getTransactionId());
@@ -375,8 +304,8 @@ public class KIUParserEntities {
                         OriginDestinationOption originDestinationOption = new OriginDestinationOption();
 
                         FlightSegment flightSegment = new FlightSegment();
-                        flightSegment.setDepartureDateTime(toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
-                        flightSegment.setArrivalDateTime(toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setDepartureDateTime(DateParser.toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setArrivalDateTime(DateParser.toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
                         flightSegment.setFlightNumber(itineraryOption.getFlightNumber());
                         flightSegment.setDepartureAirport(new Location(itineraryOption.getDepartureLocationCode().getCode()));
                         flightSegment.setResBookDesigCode(itineraryOption.getCabin().getBookingCode());
@@ -440,11 +369,124 @@ public class KIUParserEntities {
         return kIU_AirBookRQ;
     }
 
-    public static APCB_Travel fromAirBookResponse(APCB_Travel travel, KIU_AirBookRS kIU_AirBookRS, PropertiesReader propKiu) {
+    public static APCB_Travel fromAirBookResponse(APCB_Travel travel, KIU_AirBookRS kIU_AirBookRS, PropertiesReader prop) {
             if (kIU_AirBookRS.getBookingReferenceID() != null) {
                 travel.setBookingReferenceID(kIU_AirBookRS.getBookingReferenceID().getID());
+                travel.setTicketTimeLimit(new Integer(prop.getProperty("TicketTimeLimit", false)));
             }
             return travel;
+    }
+
+    public static KIU_AirDemandTicketRQ toAirDemandTicketRequest(APCB_Travel travel, APCB_PayMain payMainInfo, PropertiesReader prop) {
+        KIU_AirDemandTicketRQ kIU_AirDemandTicketRQ = new KIU_AirDemandTicketRQ();
+        kIU_AirDemandTicketRQ.setEchoToken(1);
+        kIU_AirDemandTicketRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        kIU_AirDemandTicketRQ.setTarget(prop.getProperty("Target", false));
+        kIU_AirDemandTicketRQ.setVersion(prop.getProperty("Version", false));
+        kIU_AirDemandTicketRQ.setSequenceNmbr(travel.getTransactionId());
+        kIU_AirDemandTicketRQ.setPrimaryLangID(prop.getProperty("PrimaryLang", false));
+
+        Pos pos = new Pos();
+        Source source = new Source();
+        source.setAgentSine(prop.getProperty("AgentSine", false));
+        source.setTerminalID(prop.getProperty("TerminalID", false));
+        source.setPseudoCityCode(prop.getProperty("PseudoCityCode", false));
+        source.setISOCountry(ISOCountryEnum.getCodeByDescription(prop.getProperty("ISOCountry", false)));
+        if (ISOCurrencyEnum.isValid(travel.getCurrency())) {
+            source.setISOCurrency(travel.getCurrency().getCode());
+        } else {
+            source.setISOCurrency(ISOCurrencyEnum.getCodeByDescription(prop.getProperty("ISOCurrencyDefault", false)));
+        }
+        source.setRequestorID(new Property(prop.getProperty("RequestorIDType", false)));
+        source.setBookingChannel(new Property(prop.getProperty("BookingChannelType", false)));
+        pos.setSource(source);
+        kIU_AirDemandTicketRQ.setPOS(pos);
+
+        DemandTicketDetail demandTicketDetail = new DemandTicketDetail();
+        
+        UniqueId bookingReferenceID = new UniqueId();
+        bookingReferenceID.setID(travel.getBookingReferenceID());
+        bookingReferenceID.setCompanyName(prop.getProperty("airlineCode", false));
+        demandTicketDetail.setBookingReferenceID(bookingReferenceID);
+        
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setPaymentType(Integer.valueOf(payMainInfo.getPaymentType().getCode()));
+            CreditCardInfo creditCardInfo = new CreditCardInfo();
+            creditCardInfo.setCardType(Integer.BYTES);
+            creditCardInfo.setCardCode(null);
+            creditCardInfo.setCardNumber(payMainInfo.getCardNumber().toString());
+            creditCardInfo.setSeriesCode(payMainInfo.getCVC());
+            
+            Calendar ExpirationDate = DateParser.fromDateSring(payMainInfo.getExpirationDate(), prop, "ExpirationDateCardFormatIN" );
+            creditCardInfo.setExpireDate(DateParser.toDateSring(ExpirationDate, prop, "ExpirationDateCardFormatOUT"));
+            
+        paymentInfo.setCreditCardInfo(creditCardInfo);
+        
+            ValueAddedTax valueAddedTax = new ValueAddedTax();
+            valueAddedTax.setVAT(payMainInfo.getTaxesAmount().toString());
+        paymentInfo.setValueAddedTax(valueAddedTax);
+        
+        demandTicketDetail.setPaymentInfo(paymentInfo);
+        kIU_AirDemandTicketRQ.setDemandTicketDetail(demandTicketDetail);
+
+        return kIU_AirDemandTicketRQ;
+    }
+
+    public static APCB_Travel fromAirDemandTicketResponse(APCB_Travel travel, KIU_AirDemandTicketRS kIU_AirDemandTicketRS, PropertiesReader prop) {
+        if (kIU_AirDemandTicketRS.getTicketItemInfo() != null) {
+            travel.setTicketNumber(kIU_AirDemandTicketRS.getTicketItemInfo().getTicketNumber());
+        }
+        return travel;
+    }
+
+    public static KIU_CancelRQ toCancelRequest(APCB_Travel travel, PropertiesReader prop) {
+        KIU_CancelRQ kIU_CancelRQ = new KIU_CancelRQ();
+        kIU_CancelRQ.setEchoToken(1);
+        kIU_CancelRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        kIU_CancelRQ.setTarget(prop.getProperty("Target", false));
+        kIU_CancelRQ.setVersion(prop.getProperty("Version", false));
+        kIU_CancelRQ.setSequenceNmbr(travel.getTransactionId());
+        kIU_CancelRQ.setPrimaryLangID(prop.getProperty("PrimaryLang", false));
+
+        Pos pos = new Pos();
+        Source source = new Source();
+        source.setAgentSine(prop.getProperty("AgentSine", false));
+        source.setTerminalID(prop.getProperty("TerminalID", false));
+        source.setPseudoCityCode(prop.getProperty("PseudoCityCode", false));
+        source.setISOCountry(ISOCountryEnum.getCodeByDescription(prop.getProperty("ISOCountry", false)));
+        if (ISOCurrencyEnum.isValid(travel.getCurrency())) {
+            source.setISOCurrency(travel.getCurrency().getCode());
+        } else {
+            source.setISOCurrency(ISOCurrencyEnum.getCodeByDescription(prop.getProperty("ISOCurrencyDefault", false)));
+        }
+        source.setRequestorID(new Property(prop.getProperty("RequestorIDType", false)));
+        source.setBookingChannel(new Property(prop.getProperty("BookingChannelType", false)));
+        pos.setSource(source);
+        kIU_CancelRQ.setPOS(pos);
+        
+        kIU_CancelRQ.setUniqueID(new ArrayList<UniqueId>());
+        UniqueId bookingReference = new UniqueId();
+        bookingReference.setType(UniqueIDTypeEnum.BookingReferenceID.getCode());
+        bookingReference.setID(travel.getBookingReferenceID());
+        kIU_CancelRQ.getUniqueID().add(bookingReference);
+        
+        if (travel.getTicketNumber()!=null && !travel.getTicketNumber().isEmpty()){
+            UniqueId transaction = new UniqueId();
+            transaction.setType(UniqueIDTypeEnum.TicketNumber.getCode());
+            transaction.setID(travel.getTicketNumber());
+            kIU_CancelRQ.getUniqueID().add(transaction);
+            
+            Ticketing ticketing = new Ticketing();
+            ticketing.setTicketTimeLimit(Integer.valueOf(prop.getProperty("TicketTimeLimitBeforeCancel", false)));
+        }
+        return kIU_CancelRQ;
+    }
+
+    public static APCB_Travel fromCancelResponse(APCB_Travel travel, KIU_CancelRS kIU_CancelRS, PropertiesReader propKiu) {
+        if (kIU_CancelRS.getTicketing()!= null){
+            travel.setTicketTimeLimit(kIU_CancelRS.getTicketing().getTicketTimeLimit());
+        }
+        return travel;
     }
 
 }
