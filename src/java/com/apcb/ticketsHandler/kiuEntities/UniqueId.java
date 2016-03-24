@@ -7,6 +7,7 @@
 package com.apcb.ticketsHandler.kiuEntities;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -17,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UniqueId {
     private String Type;
     private String ID;
-    private String CompanyName;
+    private Property CompanyName;
 
     public String getType() {
         return Type;
@@ -35,12 +36,12 @@ public class UniqueId {
         this.ID = ID;
     }
 
-    public String getCompanyName() {
+    public Property getCompanyName() {
         return CompanyName;
     }
     
-    @XmlAttribute(name="CompanyName")
-    public void setCompanyName(String CompanyName) {
+    @XmlElement(name="CompanyName")
+    public void setCompanyName(Property CompanyName) {
         this.CompanyName = CompanyName;
     }
 

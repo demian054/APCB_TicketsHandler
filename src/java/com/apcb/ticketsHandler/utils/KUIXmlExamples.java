@@ -763,5 +763,153 @@ public class KUIXmlExamples {
         "</Ticketing> " +
         "</ItineraryInfo> " +
         "</KIU_TravelItineraryRS>";
+    public static String strXmlAirReservRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "+
+        "<KIU_AirBookRS EchoToken=\"1\" TimeStamp=\"2015-03-30T19:07:51+00:00\" "+
+        "Target=\"Production\" Version=\"3.0\" SequenceNmbr=\"1\"> "+
+        "<Success/> "+
+        "<AirItinerary> "+
+        "<OriginDestinationOptions> "+
+        "<OriginDestinationOption> "+
+        "<FlightSegment DepartureDateTime=\"2015-03-31 09:40:00\" "+
+        "ArrivalDateTime=\"2015-03-31 10:40:00\" FlightNumber=\"103\" ResBookDesigCode=\"Y\"> "+
+        "<DepartureAirport LocationCode=\"AEP\"/> "+
+        "<ArrivalAirport LocationCode=\"COR\"/> "+
+        "<MarketingAirline Code=\"XX\"/> "+
+        "</FlightSegment> "+
+        "</OriginDestinationOption> "+
+        "</OriginDestinationOptions> "+
+        "</AirItinerary> "+
+        "<TravelerInfo> "+
+        "<AirTraveler PassengerTypeCode=\"ADT\" BirthDate=\"1980-12-07\"> "+
+        "<PersonName> "+
+        "<NamePrefix>MR</NamePrefix> "+
+        "<GivenName>JUAN</GivenName> "+
+        "<MiddleName>CARLOS</MiddleName> "+
+        "<Surname>PEREZ</Surname> "+
+        "</PersonName> "+
+        "<Telephone AreaCityCode=\"011\" PhoneNumber=\"123456789\"/> "+
+        "<Address> "+
+        "<AddressLine>CALLE 34 N 11</AddressLine> "+
+        "<CityName>BUENOS AIRES</CityName> "+
+        "<PostalCode>C1407AXA</PostalCode> "+
+        "<StateProv>CAPITAL FEDERAL</StateProv> "+
+        "<CountryName>ARGENTINA</CountryName> "+
+        "</Address> "+
+        "<Email>JUAN@PEREZ.COM</Email> "+
+        "<Document DocID=\"123456789\" DocType=\"NI\"/> "+
+        "<CustoLoyalty ProgramID=\"XX\" MembershipID=\"12346789\"/> "+
+        "<TSAInfo> "+
+        "<BirthDate>1980-12-07</BirthDate> "+
+        "<Gender>M</Gender> "+
+        "<DocExpireDate>2017-01-20</DocExpireDate> "+
+        "<DocIssueCountry>AR</DocIssueCountry> "+
+        "<BirthCountry>AR</BirthCountry> "+
+        "<TSADocType>P</TSADocType> "+
+        "<TSADocID>123456789</TSADocID> "+
+        "</TSAInfo> "+
+        "<TravelerRefNumber RPH=\"01\"/> "+
+        "</AirTraveler> "+
+        "<SpecialReqDetails> "+
+        "<Remarks> "+
+        "<Remark>PASAJERO NECESITA SILLA DE RUEDAS</Remark> "+
+        "</Remarks> "+
+        "<SpecialServiceRequests> "+
+        "<SpecialServiceRequest Airline=\"XX\" Code=\"CKIN\" "+
+        "Status=\"UC\" DepartureAirport=\"AEP\" ArrivalAirport=\"COR\" FlightNumber=\"103\" "+
+        "RecordBookDesignator=\"Y\" Date=\"2015-03-31\" NumberOfServices=\"1\" "+
+        "PassengerNames=\"-1PEREZ/JUAN CARLOS\" Text=\"FREE TEXT IS MANDATORY\" "+
+        "PassengerAssociationIds=\"P1\"/> "+
+        "<SpecialServiceRequest Airline=\"XX\" Code=\"WCHR\" "+
+        "Status=\"UC\" DepartureAirport=\"AEP\" ArrivalAirport=\"COR\" FlightNumber=\"103\" "+
+        "RecordBookDesignator=\"Y\" Date=\"2015-03-31\" NumberOfServices=\"1\" "+
+        "PassengerNames=\"-1PEREZ/JUAN CARLOS\" Text=\"ONLY STATUS NN IS PERMITTED\" "+
+        "PassengerAssociationIds=\"P1\"/> "+
+        "</SpecialServiceRequests> "+
+        "</SpecialReqDetails> "+
+        "</TravelerInfo> "+
+        "<BookingReferenceID Type=\"1\" ID=\"OOJPDB\"/> "+
+        "</KIU_AirBookRS>";
     
+    public static String strXmlAirDemandRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "+
+        "<KIU_AirDemandTicketRS EchoToken=\"1\" TimeStamp=\"2012-04-25T15:45:57+00:00\" "+
+        "Target=\"Testing\" Version=\"3.0\" SequenceNmbr=\"1\"><Success/> "+
+        "<BookingReferenceID ID=\"EKVXLW\"> "+
+        "<CompanyName Code=\"XX\" /> "+
+        "</BookingReferenceID> "+
+        "<TicketItemInfo TicketNumber=\"9992200029590\" Type=\"eTicket\" ItemNumber=\"1\" "+
+        "TotalAmount=\"300.37\" CommissionAmount=\"0.00\" PaymentType=\"5\"> "+
+        "<PassengerName> "+
+        "<GivenName>JUAN</GivenName> "+
+        "<Surname>PEREZ</Surname> "+
+        "</PassengerName> "+
+        "</TicketItemInfo> "+
+        "</KIU_AirDemandTicketRS>";
+    
+    public static String strXmlAirCancelRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "+
+        "<KIU_CancelRS EchoToken=\"1\" TimeStamp=\"2015-03-12T17:17:36+00:00\" "+
+        "Target=\"Testing\" Version=\"3.0\" SequenceNmbr=\"1\"> "+
+        "<Success/> "+
+        "<UniqueID Type=\"14\" ID=\"UNSXXM\" /> "+
+        "<Ticketing TicketTimeLimit=\"2\" /> "+
+        "</KIU_CancelRS>";
+    public static String strXmlAirConsultTicketRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><KIU_TravelItineraryRS EchoToken=\"1\" " +
+        "TimeStamp=\"2015-03-12T19:34:53+00:00\" Target=\"Testing\" Version=\"3.0\" " +
+        "SequenceNmbr=\"1\"> " +
+        "<Success/> " +
+        "<ItineraryInfo> " +
+        "<Ticketing> " +
+        "<TicketAdvisory><![CDATA[<HTML><HEAD><STYLE>.small {font-size: 8px;}.medium {font-size: 12px;}.big {font-size: 14px;}</STYLE></HEAD><BODY><PRE class=\"medium\">ELECTRONIC TICKET / BOLETO ELECTRONICO <B> * DUPLICADO - NO VALIDO PARA CREDITO FISCAL *</B>                         PASSENGER ITINERARY RECEIPT                TICKET NRO: <B>1520230500714</B>RECIBO DE ITINERARIO DE PASAJEROS          BOLETO NRO:  <B>AEROPOSTAL              </B> ISSUE DATE/FECHA DE EMISION: 18 MAR 2016 <B>INTERNET                      </B> AV.PASEO COLON TORRE POLAR OESTE PISO 22      LOS CAOBOS                ISSUE AGENT/ AGENTE EMISOR: NET00VHWW CARACAS, VENEZUELA                       NAME/NOMBRE:  <B>BOLIVAR/DEMIAN MR   </B> OFFICE ID: VE-07963-0               FOID/D.IDENTIDAD: NI22222222          TELEPHONE/TELEFONO: INTERNET:0800-AVIONES (2846637RIF: 1148.94MAIL INFO/EMAIL: TICKETS.EXPRESS@AEROPOSTAL.COMISSUING AIRLINE/LINEA AEREA EMISORA : AEROPOSTALRIF                                 : J-30399491-1ADDRESS/DIRECCION                   : AV.PASEO COLON, TORRE POLAR OESTE, PISO 22                                      PLAZA VENEZUELA, CARACAS, VENEZUELATICKET NUMBER/NUMERO DE BOLETO      : 152-0230500714BOOKING REF. /CODIGO DE RESERVA     : C1/<B>NBGAJJ</B>FROM/TO        FLIGHT CL  DATE  TIME  FARE BASIS     NVB   NVA   BAG     STDESDE/HACIA    VUELO  CL  FECHA HORA  BASE TARIFARIA             EQUIP.  ESTATUS CARACAS        VH362  Y  18MAR 1205  Y                          23K     OK  MATURIN         MATURIN        VH363  Y  20MAR 1325  Y                          23K     OK  CARACAS        AL MOMENTO DEL CHECK-IN DEBERA PRESENTAR UN DOCUMENTO OFICIAL DE IDENTIDAD CON FOTOGRAFIA:\\ DNI, CEDULA DE IDENTIDAD, PASAPORTE.AT THE CHECK-IN PROCESS, PASSENGERS MUST SHOW AN OFFICIAL IDENTIFICATION DOCUMENT WITH PHOTO:\\ ID, IDENTITY CARD, PASSPORT.ENDORSEMENTS/ENDOSOS-RESTRICCIONES : NON END/NON REF/ NO SHOW PENALTY APPLIESTOUR CODE                          : FORM OF PAYMENT/FORMA DE PAGO      : VISA ************1111FARE CALC./CALCULO DE TARIFA: CCS VH MUN VEF1663.00Y VH CCS VEF1663.00Y TTL VEF3326.00 END XT 33.26EU 266.08YN (ADT)AIR FARE/TARIFA  : VEF   3326.00TAX/IMPUESTOS    : VEF    141.60AK                          354.00C2                           33.26EU                          266.08YN                      TOTAL            : VEF   4120.94</PRE><PRE class=\"small\"></PRE><PRE class=\"small\"><B>CONDICIONES TARIFARIAS Y DE TRANSPORTE</B></PRE><PRE class=\"medium\">* ETKT VALIDO POR 12 MESES A PARTIR DE LA FECHA DE EMISION. CONSULTE LAS CONDICIONES EN: WWW.AEROPOSTAL.COM* TARIFA SUJETA A CAMBIOS SIN PREVIO AVISO. CONDICIONES Y RESTRICCIONES APLICAN.* SIRVASE INFORMARNOS SI TIENE UN VUELO EN CONEXION.* PRESENTARSE EN EL AEROPUERTO 2 HORAS ANTES EN VUELOS NACIONALES Y 4 HORAS EN VUELOS INTERNACIONALES* EN TEMPORADAS ALTAS FAVOR AGREGAR 1 HORA A LAS PREVIAMENTE MENCIONADAS.* EN CASO DE NO VOLAR EN LA FECHA INDICADA, NUESTRO SISTEMA CANCELARA AUTOMATICAMENTE SU VUELO DE RETORNO.* APLICA PENALIDAD DEL 50 POR CIENTO DEL VALOR DEL TRAYECTO EN EL CUAL EL PASAJERO SEA NO SHOW</PRE><PRE class=\"small\"><B>FARE RESTRICTIONS AND TRANSPORTATION TERMS</B></PRE><PRE class=\"medium\">* ETKT VALID FOR ONE YEAR FROM THE ISSUE DATE. CONDITIONS AT: WWW.AEROPOSTAL.COM* FARE MAY CHANGE WITHOUT NOTICE. CONDITIONS AND RESTRICTIONS MAY APPLY.* IF YOU HAVE A CONNECTING FLIGHT PLEASE INFORM IT AT OUR COUNTERS.* PASSENGER MUST ARRIVE AT THE AIRPORT 2 HOURS BEFORE FOR DOMESTIC FLIGHTS AND 4 HOURS FOR INTERNATIONAL FLIGHTS.* IN HIGH SEASONS PLEASE ADD 1 HOUR.* IN CASE OF NO SHOW OUR SYSTEM WILL CANCEL YOUR RETURN OR CONTINUING FLIGHT* APPLY PENALTY OF 50 PERCENT OF THE VALUE OF THE WAY IN WHICH THE PASSENGER IS NO SHOW.SENT BY AGENT NET00VHWW]]></TicketAdvisory> " +
+        "</Ticketing> " +
+        "</ItineraryInfo> " +
+        "</KIU_TravelItineraryRS>";
+    public static String strXmlAirConsultbookingReferenceRS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+        "<KIU_TravelItineraryRS EchoToken=\"1\" TimeStamp=\"2015-03-12T19:33:36+00:00\" " +
+        "Target=\"Testing\" Version=\"3.0\" SequenceNmbr=\"1\"> " +
+        "<Success/> " +
+        "<TravelItinerary> " +
+        "<ItineraryRef Type=\"14\" ID=\"IKEIKZ\"/> " +
+        "<CustomerInfos> " +
+        "<CustomerInfo RPH=\"1\"> " +
+        "<Customer PassengerTypeCode=\"ADT\"> " +
+        "<PersonName> " +
+        "<Surname>PEREZ</Surname> " +
+        "<GivenName>JUAN</GivenName> " +
+        "</PersonName> " +
+        "<Document DocType=\"NI\" DocID=\"123456789\" /> " +
+        "<ContactPerson> " +
+        "<Telephone>123456798</Telephone> " +
+        "<Email>JUAN@PEREZ.COM</Email> " +
+        "</ContactPerson> " +
+        "</Customer> " +
+        "</CustomerInfo> " +
+        "</CustomerInfos> " +
+        "<ItineraryInfo> " +
+        "<ReservationItems> " +
+        "<Item ItinSeqNumber=\"1\"> " +
+        "<Air> " +
+        "<Reservation DepartureDateTime=\"2012-11-13T12:00:00\" " +
+        "FlightNumber=\"4540\" ResBookDesigCode=\"J\"> " +
+        "<DepartureAirport LocationCode=\"AEP\" /> " +
+        "<ArrivalAirport LocationCode=\"COR\" /> " +
+        "<MarketingAirline>XX</MarketingAirline> " +
+        "</Reservation> " +
+        "</Air> " +
+        "</Item> " +
+        "</ReservationItems> " +
+        "<ItineraryPricing ItemRPHList=\"01\" > " +
+        "<Cost AmountBeforeTax=\"383\" AmountAfterTax=\"493.61\" /> " +
+        "<Taxes> " +
+        "<Tax TaxCode=\"DL\" Amount=\"41.5\" CurrencyCode=\"ARS\" /> " +
+        "<Tax TaxCode=\"QN\" Amount=\"12.26\" CurrencyCode=\"ARS\" /> " +
+        "<Tax TaxCode=\"TQ\" Amount=\"1\" CurrencyCode=\"ARS\" /> " +
+        "<Tax TaxCode=\"XR\" Amount=\"17.55\" CurrencyCode=\"ARS\" /> " +
+        "<Tax TaxCode=\"YR\" Amount=\"38.3\" CurrencyCode=\"ARS\" /> " +
+        "</Taxes> " +
+        "</ItineraryPricing> " +
+        "<Ticketing TicketingStatus=\"1\" TicketTimeLimit=\"2012-11-13T19:03:00\" " +
+        "/> " +
+        "</ItineraryInfo> " +
+        "</TravelItinerary>"
+            + "</KIU_TravelItineraryRS>";
+
 }

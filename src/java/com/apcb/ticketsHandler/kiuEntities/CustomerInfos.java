@@ -14,14 +14,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement(name = "TravelItinerary")
+@XmlRootElement(name = "CustomerInfos")
 public class CustomerInfos {
     private List<CustomerInfo> CustomerInfo;
 
     public List<CustomerInfo> getCustomerInfo() {
         return CustomerInfo;
     }
-    @XmlElement(name = "TravelItinerary")
+    @XmlElement(name = "CustomerInfo")
     public void setCustomerInfo(List<CustomerInfo> CustomerInfo) {
         this.CustomerInfo = CustomerInfo;
     }

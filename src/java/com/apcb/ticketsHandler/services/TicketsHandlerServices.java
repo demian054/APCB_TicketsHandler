@@ -30,14 +30,14 @@ public class TicketsHandlerServices {
      */
     @WebMethod(operationName = "ticketAirAvail")
     public String ticketAirAvail(@WebParam(name = "request") String strRequest) {
-        Response response = new Response();
+        Request request = new Request(strRequest); 
+        Response response;
         try {
-            Request request = new Request(strRequest); 
-            
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
             response = process.ticketAirAvail(request);
             
         } catch (Exception e) {
+            response = new Response(request.getSesionId());
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
             log.error(response.getMessage().getMsgDesc(), e);
         }
@@ -46,14 +46,14 @@ public class TicketsHandlerServices {
     
     @WebMethod(operationName = "ticketAirPrice")
     public String ticketAirPrice(@WebParam(name = "request") String strRequest) {
-        Response response = new Response();
+              Request request = new Request(strRequest); 
+        Response response;
         try {
-            Request request = new Request(strRequest); 
-            
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
             response = process.ticketAirPrice(request);
             
         } catch (Exception e) {
+            response = new Response(request.getSesionId());
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
             log.error(response.getMessage().getMsgDesc(), e);
         }
@@ -62,14 +62,14 @@ public class TicketsHandlerServices {
     
     @WebMethod(operationName = "ticketAirReserv")
     public String ticketAirReserv(@WebParam(name = "request") String strRequest) {
-        Response response = new Response();
+              Request request = new Request(strRequest); 
+        Response response;
         try {
-            Request request = new Request(strRequest); 
-            
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
             response = process.ticketAirReserv(request);
             
         } catch (Exception e) {
+            response = new Response(request.getSesionId());
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
             log.error(response.getMessage().getMsgDesc(), e);
         }
@@ -78,14 +78,14 @@ public class TicketsHandlerServices {
     
    @WebMethod(operationName = "ticketAirDemand")
     public String ticketAirDemand(@WebParam(name = "request") String strRequest) {
-        Response response = new Response();
+        Request request = new Request(strRequest); 
+        Response response;
         try {
-            Request request = new Request(strRequest); 
-            
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
             response = process.ticketAirDemand(request);
             
         } catch (Exception e) {
+            response = new Response(request.getSesionId());
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
             log.error(response.getMessage().getMsgDesc(), e);
         }
@@ -94,17 +94,35 @@ public class TicketsHandlerServices {
     
     @WebMethod(operationName = "ticketAirCancel")
     public String ticketAirCancel(@WebParam(name = "request") String strRequest) {
-        Response response = new Response();
+        Request request = new Request(strRequest); 
+        Response response;
         try {
-            Request request = new Request(strRequest); 
-            
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
             response = process.ticketAirCancel(request);
             
         } catch (Exception e) {
+            response = new Response(request.getSesionId());
             response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
             log.error(response.getMessage().getMsgDesc(), e);
         }
         return gson.toJson(response);
     }
+    
+    @WebMethod(operationName = "ticketAirConsult")
+    public String ticketAirConsult(@WebParam(name = "request") String strRequest) {
+        Request request = new Request(strRequest); 
+        Response response;
+        try {
+            APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
+            response = process.ticketAirConsult(request);
+            
+        } catch (Exception e) {
+            response = new Response(request.getSesionId());
+            response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
+            log.error(response.getMessage().getMsgDesc(), e);
+        }
+        return gson.toJson(response);
+    }
+    
+    
 }

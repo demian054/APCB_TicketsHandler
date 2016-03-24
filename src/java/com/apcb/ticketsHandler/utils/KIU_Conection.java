@@ -8,9 +8,7 @@ package com.apcb.ticketsHandler.utils;
 
 import com.apcb.utils.conection.ConectionHttpsURL;
 import com.apcb.utils.utils.PropertiesReader;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIUMainRequest;
-import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
 import com.apcb.utils.ticketsHandler.enums.CabinTypeEnum;
 import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
 import com.apcb.utils.xml.XmlParser;

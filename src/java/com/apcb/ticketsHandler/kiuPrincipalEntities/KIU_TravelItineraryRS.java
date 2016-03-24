@@ -9,6 +9,7 @@ package com.apcb.ticketsHandler.kiuPrincipalEntities;
 import com.apcb.ticketsHandler.kiuEntities.TravelItinerary;
 import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
 import com.apcb.ticketsHandler.kiuEntities.Error;
+import com.apcb.ticketsHandler.kiuEntities.ItineraryInfo;
 import com.apcb.ticketsHandler.kiuEntities.Pos;
 import com.apcb.ticketsHandler.kiuEntities.TravelerInfoSummary;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -83,11 +84,12 @@ public class KIU_TravelItineraryRS {
     private Error Error;
     
     private TravelItinerary TravelItinerary;
+    private ItineraryInfo ItineraryInfo;
 
     public String getSuccess() {
         return Success;
     }
-    @XmlElement(name = "TravelerInfoSummary")
+    @XmlElement(name = "Success")
     public void setSuccess(String Success) {
         this.Success = Success;
     }
@@ -95,7 +97,7 @@ public class KIU_TravelItineraryRS {
     public Error getError() {
         return Error;
     }
-    @XmlElement(name = "TravelerInfoSummary")
+    @XmlElement(name = "Error")
     public void setError(Error Error) {
         this.Error = Error;
     }
@@ -103,10 +105,23 @@ public class KIU_TravelItineraryRS {
     public TravelItinerary getTravelItinerary() {
         return TravelItinerary;
     }
-    @XmlElement(name = "TravelerInfoSummary")
+    @XmlElement(name = "TravelItinerary")
     public void setTravelItinerary(TravelItinerary TravelItinerary) {
         this.TravelItinerary = TravelItinerary;
     }
+
+    public ItineraryInfo getItineraryInfo() {
+        return ItineraryInfo;
+    }
+    
+    @XmlElement(name = "ItineraryInfo")
+    public void setItineraryInfo(ItineraryInfo ItineraryInfo) {
+        this.ItineraryInfo = ItineraryInfo;
+    }
+    
+    
+    
+    
 
    
 }

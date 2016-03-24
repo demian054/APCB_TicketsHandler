@@ -13,17 +13,19 @@ import com.apcb.ticketsHandler.kiuEntities.UniqueId;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Demian
  */
+@XmlRootElement(name="KIU_CancelRQ")
 public class KIU_CancelRQ {
     private int EchoToken;
     private String TimeStamp;
     private String Target;
     private String Version; 
-    private int SequenceNmbr; 
+    private String SequenceNmbr; 
     private String PrimaryLangID;
     
     
@@ -59,11 +61,11 @@ public class KIU_CancelRQ {
         this.Version = version;
     }
 
-    public int getSequenceNmbr() {
+    public String getSequenceNmbr() {
         return SequenceNmbr;
     }
     @XmlAttribute(name = "SequenceNmbr")
-    public void setSequenceNmbr(int sequenceNmbr) {
+    public void setSequenceNmbr(String sequenceNmbr) {
         this.SequenceNmbr = sequenceNmbr;
     }
 

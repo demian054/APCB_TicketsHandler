@@ -15,8 +15,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "PersonName")
 public class PersonName {
+    private String NamePrefix;
     private String Surname;
     private String GivenName;
+    private String MiddleName;
 
     public String getSurname() {
         return Surname;
@@ -29,11 +31,25 @@ public class PersonName {
     public String getGivenName() {
         return GivenName;
     }
-    @XmlElement(name = "Surname")
+    @XmlElement(name = "GivenName")
     public void setGivenName(String GivenName) {
         this.GivenName = GivenName;
     }
+
+    public String getNamePrefix() {
+        return NamePrefix;
+    }
+    @XmlElement(name = "NamePrefix")
+    public void setNamePrefix(String NamePrefix) {
+        this.NamePrefix = NamePrefix;
+    }
+
+    public String getMiddleName() {
+        return MiddleName;
+    }
+    @XmlElement(name = "MiddleName")
+    public void setMiddleName(String MiddleName) {
+        this.MiddleName = MiddleName;
+    }
     
-    
- 
 }

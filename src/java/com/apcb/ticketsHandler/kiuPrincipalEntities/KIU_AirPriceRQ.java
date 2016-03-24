@@ -24,7 +24,7 @@ public class KIU_AirPriceRQ {
     private String TimeStamp;
     private String Target;
     private String Version; 
-    private int SequenceNmbr; 
+    private String SequenceNmbr; 
     private String PrimaryLangID;
     
     
@@ -60,11 +60,11 @@ public class KIU_AirPriceRQ {
         this.Version = version;
     }
 
-    public int getSequenceNmbr() {
+    public String getSequenceNmbr() {
         return SequenceNmbr;
     }
     @XmlAttribute(name = "SequenceNmbr")
-    public void setSequenceNmbr(int sequenceNmbr) {
+    public void setSequenceNmbr(String sequenceNmbr) {
         this.SequenceNmbr = sequenceNmbr;
     }
 

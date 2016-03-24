@@ -40,7 +40,7 @@ public class Customer {
     public Document getDocument() {
         return Document;
     }
-    @XmlElement(name = "PersonName")
+    @XmlElement(name = "Document")
     public void setDocument(Document Document) {
         this.Document = Document;
     }
@@ -48,7 +48,7 @@ public class Customer {
     public Verification getContactPerson() {
         return ContactPerson;
     }
-    @XmlElement(name = "PersonName")
+    @XmlElement(name = "ContactPerson")
     public void setContactPerson(Verification ContactPerson) {
         this.ContactPerson = ContactPerson;
     }

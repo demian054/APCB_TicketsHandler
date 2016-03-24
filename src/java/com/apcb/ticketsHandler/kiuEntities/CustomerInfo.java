@@ -6,6 +6,7 @@
 
 package com.apcb.ticketsHandler.kiuEntities;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,21 +17,21 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "CustomerInfo")
 public class CustomerInfo {
-    private int RPHM;
+    private int RPH;
     private Customer Customer;
 
-    public int getRPHM() {
-        return RPHM;
+    public int getRPH() {
+        return RPH;
     }
-    @XmlAttribute(name = "CustomerInfo")
-    public void setRPHM(int RPHM) {
-        this.RPHM = RPHM;
+    @XmlAttribute(name = "RPH")
+    public void setRPHM(int RPH) {
+        this.RPH = RPH;
     }
 
     public Customer getCustomer() {
         return Customer;
     }
-    @XmlElement(name = "CustomerInfo")
+    @XmlElement(name = "Customer")
     public void setCustomer(Customer Customer) {
         this.Customer = Customer;
     }

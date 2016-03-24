@@ -10,6 +10,7 @@ import com.apcb.ticketsHandler.kiuEntities.AirItinerary;
 import com.apcb.ticketsHandler.kiuEntities.Pos;
 import com.apcb.ticketsHandler.kiuEntities.Ticketing;
 import com.apcb.ticketsHandler.kiuEntities.AirTraveler;
+import com.apcb.ticketsHandler.kiuEntities.TravelerInfo;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Demian
  */
-@XmlRootElement(name="KIU_AirPriceRQ")
+@XmlRootElement(name="KIU_AirBookRQ")
 public class KIU_AirBookRQ {
     private int EchoToken;
     private String TimeStamp;
@@ -82,7 +83,7 @@ public class KIU_AirBookRQ {
     private Pos POS;
     private List<AirItinerary> AirItinerary;
     
-    private List<AirTraveler> TravelerInfo;
+    private TravelerInfo TravelerInfo;
     
     private Ticketing Ticketing;
 
@@ -103,11 +104,11 @@ public class KIU_AirBookRQ {
         this.AirItinerary = AirItinerary;
     }
 
-    public List<AirTraveler> getTravelerInfo() {
+    public TravelerInfo getTravelerInfo() {
         return TravelerInfo;
     }
     @XmlElement(name = "TravelerInfo")
-    public void setTravelerInfo(List<AirTraveler> TravelerInfo) {
+    public void setTravelerInfo(TravelerInfo TravelerInfo) {
         this.TravelerInfo = TravelerInfo;
     }
 

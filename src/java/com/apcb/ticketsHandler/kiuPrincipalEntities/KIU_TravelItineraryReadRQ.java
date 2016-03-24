@@ -9,6 +9,7 @@ package com.apcb.ticketsHandler.kiuPrincipalEntities;
 import com.apcb.ticketsHandler.kiuEntities.Verification;
 import com.apcb.ticketsHandler.kiuEntities.UniqueId;
 import com.apcb.ticketsHandler.kiuEntities.Pos;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,7 +24,7 @@ public class KIU_TravelItineraryReadRQ {
     private String TimeStamp;
     private String Target;
     private String Version; 
-    private int SequenceNmbr; 
+    private String SequenceNmbr; 
     private String PrimaryLangID;
     
     
@@ -59,11 +60,11 @@ public class KIU_TravelItineraryReadRQ {
         this.Version = version;
     }
 
-    public int getSequenceNmbr() {
+    public String getSequenceNmbr() {
         return SequenceNmbr;
     }
     @XmlAttribute(name = "SequenceNmbr")
-    public void setSequenceNmbr(int sequenceNmbr) {
+    public void setSequenceNmbr(String sequenceNmbr) {
         this.SequenceNmbr = sequenceNmbr;
     }
 
@@ -78,7 +79,7 @@ public class KIU_TravelItineraryReadRQ {
     /****************XmlElements*****************/
     
     private Pos POS;
-    private UniqueId UniqueId;
+    private List<UniqueId> UniqueID;
     private Verification Verification;
 
     public Pos getPOS() {
@@ -90,12 +91,12 @@ public class KIU_TravelItineraryReadRQ {
         this.POS = POS;
     }
 
-    public UniqueId getUniqueId() {
-        return UniqueId;
+    public List<UniqueId> getUniqueID() {
+        return UniqueID;
     }
-    @XmlElement(name = "UniqueId")
-    public void setUniqueId(UniqueId UniqueId) {
-        this.UniqueId = UniqueId;
+    @XmlElement(name = "UniqueID")
+    public void setUniqueID(List<UniqueId> UniqueID) {
+        this.UniqueID = UniqueID;
     }
 
     public Verification getVerification() {

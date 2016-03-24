@@ -28,7 +28,7 @@ public class KIU_AirAvailRQ {
     private String TimeStamp;
     private String Target;
     private String Version; 
-    private int SequenceNmbr; 
+    private String SequenceNmbr; 
     private String PrimaryLangID;
     private boolean DirectFlightsOnly; 
     private int MaxResponses;
@@ -65,11 +65,11 @@ public class KIU_AirAvailRQ {
         this.Version = Version;
     }
 
-    public int getSequenceNmbr() {
+    public String getSequenceNmbr() {
         return SequenceNmbr;
     }
     @XmlAttribute(name = "SequenceNmbr")
-    public void setSequenceNmbr(int SequenceNmbr) {
+    public void setSequenceNmbr(String SequenceNmbr) {
         this.SequenceNmbr = SequenceNmbr;
     }
 

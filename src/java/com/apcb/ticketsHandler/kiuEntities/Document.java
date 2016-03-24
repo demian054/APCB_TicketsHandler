@@ -6,6 +6,7 @@
 
 package com.apcb.ticketsHandler.kiuEntities;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -22,7 +23,7 @@ public class Document {
     public String getDocType() {
         return DocType;
     }
-    @XmlElement(name = "DocType")
+    @XmlAttribute(name = "DocType")
     public void setDocType(String DocType) {
         this.DocType = DocType;
     }
@@ -30,7 +31,7 @@ public class Document {
     public String getDocID() {
         return DocID;
     }
-    @XmlElement(name = "DocType")
+    @XmlAttribute(name = "DocID")
     public void setDocID(String DocID) {
         this.DocID = DocID;
     }

@@ -7,12 +7,15 @@ package com.apcb.ticketsHandler.utils;
 
 import com.apcb.ticketsHandler.kiuEntities.*;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.*;
+import com.apcb.utils.enums.DocumentTypeEnum;
 import com.apcb.utils.paymentHandler.entities.APCB_PayMain;
 import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.utils.ticketsHandler.enums.*;
 import com.apcb.utils.ticketsHandler.entities.*;
 import com.apcb.utils.utils.DateParser;
+import com.apcb.utils.utils.StringUtils;
 import com.google.gson.Gson;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -91,6 +94,16 @@ public class KIUParserEntities {
 
     public static APCB_Travel fromAirAvailResponse(APCB_Travel travel, KIU_AirAvailRS kIU_AirAvailRS, PropertiesReader prop) {
         log.info("Response from KIU :" + new Gson().toJson(kIU_AirAvailRS));
+        // contamos los asientos qeue necesitamos solo niño y adulto, los infantes no ocupan.
+        int passangerQuantitySeat = 0;
+        for (APCB_Passenger passenger:travel.getPassangers()){
+            if (passenger.getPassangerType().equals(PassangerTypeEnum.Adulto)
+                    || passenger.getPassangerType().equals(PassangerTypeEnum.Niño)){
+                passangerQuantitySeat += passenger.getPassangerQuantity();
+            }
+
+        }
+        
         int itineraryNumber = 0;
         for (AirItinerary airItinerary : kIU_AirAvailRS.getOriginDestinationInformation()) {
             APCB_Itinerary itinerary = travel.getItinerary()[itineraryNumber++];
@@ -128,10 +141,31 @@ public class KIUParserEntities {
                         log.error("Error DepartureLocationCode ", e);
                     }
                     itineraryOption.setStopQuantity(Integer.parseInt(flightSegment.getStopQuantity()));
-
-                    itineraryOptions.add(itineraryOption);
+                    
+                    for (BookingClassAvail bookingClassAvail : flightSegment.getBookingClassAvail()) {
+                        if (bookingClassAvail.getResBookDesigCode().equals(itineraryOption.getCabin().getBookingCode())){
+                            // si esta en L es Lista de espera y si esta en R estan en Reservados por tanto no se agregan
+                            log.info("bookingClassAvail.getResBookDesigQuantity()="+bookingClassAvail.getResBookDesigQuantity());
+                            if (bookingClassAvail.getResBookDesigQuantity().equalsIgnoreCase("L") 
+                                    || bookingClassAvail.getResBookDesigQuantity().equalsIgnoreCase("R")){
+                                itineraryOption.setBookingAvail(0);
+                            } else if (passangerQuantitySeat>Integer.valueOf(bookingClassAvail.getResBookDesigQuantity())){
+                                itineraryOption.setBookingAvail(0);
+                            }else {
+                                itineraryOption.setBookingAvail(Integer.valueOf(bookingClassAvail.getResBookDesigQuantity()));
+                            }
+                            
+                        }                        
+                    }
+                    if (itineraryOption.getBookingAvail()>0){
+                        itineraryOptions.add(itineraryOption);
+                    }
+                    
                 }
-                itinerary.putItineraryOption((APCB_ItineraryOption[]) itineraryOptions.toArray(new APCB_ItineraryOption[itineraryOptions.size()]));
+                // si no hay opciones de itinerario que no agrege la lista (esto es posible ya que ignoramos los que esta en R y L)
+                if (itineraryOptions.size()>0){
+                    itinerary.putItineraryOption((APCB_ItineraryOption[]) itineraryOptions.toArray(new APCB_ItineraryOption[itineraryOptions.size()]));
+                }
             }
             //travel.putItinerary(itinerary);  
         }
@@ -177,8 +211,8 @@ public class KIUParserEntities {
                         OriginDestinationOption originDestinationOption = new OriginDestinationOption();
 
                         FlightSegment flightSegment = new FlightSegment();
-                        flightSegment.setDepartureDateTime(DateParser.toDateSring(itineraryOption.getDepartureDateTime(), prop, "DateTimeFormat"));
-                        flightSegment.setArrivalDateTime(DateParser.toDateSring(itineraryOption.getArrivalDateTime(), prop, "DateTimeFormat"));
+                        flightSegment.setDepartureDateTime(DateParser.toDateSring(itineraryOption.getDepartureDateTime(), prop, "TimeStampFormat"));
+                        flightSegment.setArrivalDateTime(DateParser.toDateSring(itineraryOption.getArrivalDateTime(), prop, "TimeStampFormat"));
                         flightSegment.setFlightNumber(itineraryOption.getFlightNumber());
                         flightSegment.setDepartureAirport(new Location(itineraryOption.getDepartureLocationCode().getCode()));
                         flightSegment.setResBookDesigCode(itineraryOption.getCabin().getBookingCode());
@@ -274,7 +308,8 @@ public class KIUParserEntities {
         kIU_AirBookRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
         kIU_AirBookRQ.setTarget(prop.getProperty("Target", false));
         kIU_AirBookRQ.setVersion(prop.getProperty("Version", false));
-        kIU_AirBookRQ.setSequenceNmbr(travel.getTransactionId());
+        //kIU_AirBookRQ.setSequenceNmbr(travel.getTransactionId());
+        kIU_AirBookRQ.setSequenceNmbr(1);
         kIU_AirBookRQ.setPrimaryLangID(prop.getProperty("PrimaryLang", false));
 
         Pos pos = new Pos();
@@ -324,45 +359,62 @@ public class KIUParserEntities {
         List<AirTraveler> travelersInfo = new ArrayList<>();
 
         if (travel.getPassangers() != null) {
-
+            int RPH = 0;
             for (APCB_Passenger passanger : travel.getPassangers()) {
                 for (APCB_PassengerDetail passangerDetail : passanger.getPassengersDetail()) {
                     AirTraveler airTraveler = new AirTraveler();
                     airTraveler.setPassengerTypeCode(passanger.getPassangerType().getCode());
                     
                     PersonName personName = new PersonName();
-                    personName.setGivenName(passangerDetail.getName());
-                    personName.setSurname(passangerDetail.getSurname());
+                    if (passangerDetail.getNamePrefix()!=null){
+                        personName.setNamePrefix(StringUtils.removeSpecials(passangerDetail.getNamePrefix().getCode()));
+                    }
+                    personName.setGivenName(StringUtils.removeSpecials(passangerDetail.getName()));
+                    personName.setSurname(StringUtils.removeSpecials(passangerDetail.getSurname()));
+                    if (!passangerDetail.getMiddleName().isEmpty()){
+                        personName.setMiddleName(StringUtils.removeSpecials(passangerDetail.getMiddleName()));
+                    }
+
                     airTraveler.setPersonName(personName);
                     
-                    if (passangerDetail.getTelephone()!= null && passangerDetail.getSurname().length()>3){
+                    if (passangerDetail.getTelephone()!= null && passangerDetail.getTelephone().length()>3){
                         Telephone telephone = new Telephone();
-                        telephone.setAreaCityCode(passangerDetail.getTelephone().substring(0, 3));
+                        telephone.setAreaCityCode(passangerDetail.getTelephone().substring(0, 4));
                         telephone.setPhoneNumber(passangerDetail.getTelephone().substring(4));
                         airTraveler.setTelephone(telephone);
+                    } else if (passangerDetail.getTelephoneHome()!= null && passangerDetail.getTelephoneHome().length()>3){
+                        Telephone telephone = new Telephone();
+                        telephone.setAreaCityCode(passangerDetail.getTelephoneHome().substring(0, 4));
+                        telephone.setPhoneNumber(passangerDetail.getTelephoneHome().substring(4));
+                        airTraveler.setTelephone(telephone);
                     }
-                    
                     airTraveler.setEmail(passangerDetail.getEmail());
                     
                     Document document = new Document();
-                    document.setDocType(passangerDetail.getDocumentType().getCode());
-                    document.setDocID(passangerDetail.getDocumentID());
-                    airTraveler.setDocument(document);
-                    
+                    if (!passanger.getPassangerType().equals(PassangerTypeEnum.Infante)){
+                        document.setDocType(passangerDetail.getDocumentType().getCode());
+                        document.setDocID(passangerDetail.getDocumentID());
+                        airTraveler.setDocument(document);
+                    } else {
+                        document.setDocType(DocumentTypeEnum.Cedula.getCode());
+                        document.setDocID(passangerDetail.getAge()+passangerDetail.getAgeType().getCode());
+                    }
                     CustoLoyalty custoLoyalty = new CustoLoyalty();
                     custoLoyalty.setMembershipID(passangerDetail.getCustLoyaltyMembershipID());
                     custoLoyalty.setProgramID(passangerDetail.getCustLoyaltyProgramID());
                     airTraveler.setCustoLoyalty(custoLoyalty);
                     
                     TravelerRefNumber travelerRefNumber = new TravelerRefNumber();
-                    travelerRefNumber.setRPH(new Integer(passangerDetail.getDocumentID()));
+                    travelerRefNumber.setRPH(++RPH);
+                    airTraveler.setTravelerRefNumber(travelerRefNumber);
                     
                     travelersInfo.add(airTraveler);
                 }
             }
         }
 
-        kIU_AirBookRQ.setTravelerInfo(travelersInfo);
+        kIU_AirBookRQ.setTravelerInfo(new TravelerInfo());
+        kIU_AirBookRQ.getTravelerInfo().setAirTraveler(travelersInfo);
         Ticketing ticketing = new Ticketing();
         ticketing.setTicketTimeLimit(new Integer(prop.getProperty("TicketTimeLimit", false)));
         kIU_AirBookRQ.setTicketing(ticketing);
@@ -406,14 +458,16 @@ public class KIUParserEntities {
         
         UniqueId bookingReferenceID = new UniqueId();
         bookingReferenceID.setID(travel.getBookingReferenceID());
-        bookingReferenceID.setCompanyName(prop.getProperty("airlineCode", false));
+        Property companyName = new Property();
+        companyName.setCode(prop.getProperty("airlineCode", false));
+        bookingReferenceID.setCompanyName(companyName);
         demandTicketDetail.setBookingReferenceID(bookingReferenceID);
         
         PaymentInfo paymentInfo = new PaymentInfo();
         paymentInfo.setPaymentType(Integer.valueOf(payMainInfo.getPaymentType().getCode()));
             CreditCardInfo creditCardInfo = new CreditCardInfo();
-            creditCardInfo.setCardType(Integer.BYTES);
-            creditCardInfo.setCardCode(null);
+            creditCardInfo.setCardType(Integer.valueOf(payMainInfo.getPaymentType().getCodeAlternative()));
+            creditCardInfo.setCardCode(payMainInfo.getCardEmisor().getCode());
             creditCardInfo.setCardNumber(payMainInfo.getCardNumber().toString());
             creditCardInfo.setSeriesCode(payMainInfo.getCVC());
             
@@ -463,21 +517,23 @@ public class KIUParserEntities {
         source.setBookingChannel(new Property(prop.getProperty("BookingChannelType", false)));
         pos.setSource(source);
         kIU_CancelRQ.setPOS(pos);
-        
         kIU_CancelRQ.setUniqueID(new ArrayList<UniqueId>());
-        UniqueId bookingReference = new UniqueId();
-        bookingReference.setType(UniqueIDTypeEnum.BookingReferenceID.getCode());
-        bookingReference.setID(travel.getBookingReferenceID());
-        kIU_CancelRQ.getUniqueID().add(bookingReference);
         
         if (travel.getTicketNumber()!=null && !travel.getTicketNumber().isEmpty()){
             UniqueId transaction = new UniqueId();
             transaction.setType(UniqueIDTypeEnum.TicketNumber.getCode());
             transaction.setID(travel.getTicketNumber());
             kIU_CancelRQ.getUniqueID().add(transaction);
-            
             Ticketing ticketing = new Ticketing();
             ticketing.setTicketTimeLimit(Integer.valueOf(prop.getProperty("TicketTimeLimitBeforeCancel", false)));
+            kIU_CancelRQ.setTicketing(ticketing);
+            
+        } else {
+
+            UniqueId bookingReference = new UniqueId();
+            bookingReference.setType(UniqueIDTypeEnum.BookingReferenceID.getCode());
+            bookingReference.setID(travel.getBookingReferenceID());
+            kIU_CancelRQ.getUniqueID().add(bookingReference);
         }
         return kIU_CancelRQ;
     }
@@ -486,6 +542,125 @@ public class KIUParserEntities {
         if (kIU_CancelRS.getTicketing()!= null){
             travel.setTicketTimeLimit(kIU_CancelRS.getTicketing().getTicketTimeLimit());
         }
+        return travel;
+    }
+
+    public static KIU_TravelItineraryReadRQ toConsultRequest(APCB_Travel travel, PropertiesReader prop) {
+        KIU_TravelItineraryReadRQ kIU_TravelItineraryReadRQ = new KIU_TravelItineraryReadRQ();
+        kIU_TravelItineraryReadRQ.setEchoToken(1);
+        kIU_TravelItineraryReadRQ.setTimeStamp(DateParser.toDateSring(Calendar.getInstance(), prop, "TimeStampFormatTZ"));
+        kIU_TravelItineraryReadRQ.setTarget(prop.getProperty("Target", false));
+        kIU_TravelItineraryReadRQ.setVersion(prop.getProperty("Version", false));
+        kIU_TravelItineraryReadRQ.setSequenceNmbr(travel.getTransactionId());
+        kIU_TravelItineraryReadRQ.setPrimaryLangID(prop.getProperty("PrimaryLang", false));
+
+        Pos pos = new Pos();
+        Source source = new Source();
+        source.setAgentSine(prop.getProperty("AgentSine", false));
+        source.setTerminalID(prop.getProperty("TerminalID", false));
+        source.setPseudoCityCode(prop.getProperty("PseudoCityCode", false));
+        source.setISOCountry(ISOCountryEnum.getCodeByDescription(prop.getProperty("ISOCountry", false)));
+        if (ISOCurrencyEnum.isValid(travel.getCurrency())) {
+            source.setISOCurrency(travel.getCurrency().getCode());
+        } else {
+            source.setISOCurrency(ISOCurrencyEnum.getCodeByDescription(prop.getProperty("ISOCurrencyDefault", false)));
+        }
+        source.setRequestorID(new Property(prop.getProperty("RequestorIDType", false)));
+        source.setBookingChannel(new Property(prop.getProperty("BookingChannelType", false)));
+        pos.setSource(source);
+        kIU_TravelItineraryReadRQ.setPOS(pos);
+        
+        kIU_TravelItineraryReadRQ.setUniqueID(new ArrayList<UniqueId>());
+        if (travel.getTicketNumber()!=null && !travel.getTicketNumber().isEmpty()){
+            
+            UniqueId transaction = new UniqueId();
+            transaction.setType(UniqueIDTypeEnum.TicketNumber.getCode());
+            transaction.setID(travel.getTicketNumber());
+            kIU_TravelItineraryReadRQ.getUniqueID().add(transaction);
+            
+        } else {
+            
+            UniqueId bookingReference = new UniqueId();
+            bookingReference.setType(UniqueIDTypeEnum.BookingReferenceID.getCode());
+            bookingReference.setID(travel.getBookingReferenceID());
+            kIU_TravelItineraryReadRQ.getUniqueID().add(bookingReference);
+        
+        }
+         
+        return kIU_TravelItineraryReadRQ;
+    }
+
+    public static APCB_Travel fromConsultResponse(APCB_Travel travel, KIU_TravelItineraryRS kIU_TravelItineraryRS, PropertiesReader propKiu) {
+        
+        if (kIU_TravelItineraryRS.getItineraryInfo()!=null){
+        // COnsulta por Ticket
+            travel.setTicket(kIU_TravelItineraryRS.getItineraryInfo().getTicketing().getTicketAdvisory());
+        } else {
+        // COnsulta por Reserva
+           travel.setBookingReferenceID(kIU_TravelItineraryRS.getTravelItinerary().getItineraryRef().getID());
+           
+           List<CustomerInfo> customerInfos = kIU_TravelItineraryRS.getTravelItinerary().getCustomerInfos().getCustomerInfo();
+            
+           List<APCB_PassengerDetail> passengerDetailADT = new ArrayList<APCB_PassengerDetail>();
+           List<APCB_PassengerDetail> passengerDetailCNN = new ArrayList<APCB_PassengerDetail>();
+           List<APCB_PassengerDetail> passengerDetailINF = new ArrayList<APCB_PassengerDetail>();
+           for (CustomerInfo customerInfo : customerInfos) {
+                Customer customer = customerInfo.getCustomer();
+                APCB_PassengerDetail passengerDetail = new APCB_PassengerDetail();
+                
+                PersonName personName = customer.getPersonName(); 
+                passengerDetail.setNamePrefix(NamePrefixTypeEnum.getByCode(personName.getNamePrefix()));
+                passengerDetail.setName(personName.getGivenName());
+                passengerDetail.setSurname(personName.getSurname());
+                passengerDetail.setMiddleName(personName.getMiddleName());
+                
+                Document document = customer.getDocument();
+                passengerDetail.setDocumentType(DocumentTypeEnum.getByCode(document.getDocType()));
+                passengerDetail.setDocumentID(document.getDocID());
+                
+                Verification contactPerson = customer.getContactPerson();
+                if (contactPerson!= null){
+                    if (contactPerson.getTelephone()!=null){
+                         passengerDetail.setTelephone(contactPerson.getTelephone());
+                    }
+                    if (contactPerson.getEmail()!=null){
+                         passengerDetail.setEmail(contactPerson.getEmail());
+                    }
+                }
+               
+                switch (PassangerTypeEnum.getByCode(customer.getPassengerTypeCode())){
+                    case Adulto:
+                        passengerDetailADT.add(passengerDetail);
+                        break;
+                    case Niño:
+                        passengerDetailCNN.add(passengerDetail);
+                        break;  
+                    case Infante:
+                        passengerDetailINF.add(passengerDetail);
+                        break;
+                }   
+           }
+           if (!passengerDetailADT.isEmpty()){
+               APCB_Passenger aPCB_Passenger = new APCB_Passenger();
+               aPCB_Passenger.setPassangerQuantity(passengerDetailADT.size());
+               aPCB_Passenger.setPassangerType(PassangerTypeEnum.Adulto);
+               aPCB_Passenger.putPassengersDetail(passengerDetailADT.toArray(new APCB_PassengerDetail[passengerDetailADT.size()]));
+           }
+            if (!passengerDetailCNN.isEmpty()){
+               APCB_Passenger aPCB_Passenger = new APCB_Passenger();
+               aPCB_Passenger.setPassangerQuantity(passengerDetailCNN.size());
+               aPCB_Passenger.setPassangerType(PassangerTypeEnum.Niño);
+               aPCB_Passenger.putPassengersDetail(passengerDetailADT.toArray(new APCB_PassengerDetail[passengerDetailCNN.size()]));
+           }
+            if (!passengerDetailINF.isEmpty()){
+               APCB_Passenger aPCB_Passenger = new APCB_Passenger();
+               aPCB_Passenger.setPassangerQuantity(passengerDetailINF.size());
+               aPCB_Passenger.setPassangerType(PassangerTypeEnum.Infante);
+               aPCB_Passenger.putPassengersDetail(passengerDetailADT.toArray(new APCB_PassengerDetail[passengerDetailINF.size()]));
+           }
+            
+        }
+               
         return travel;
     }
 
