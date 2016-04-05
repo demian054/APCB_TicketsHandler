@@ -349,12 +349,16 @@ public class KIUParserEntities {
                     
                     PersonName personName = new PersonName();
                     if (passangerDetail.getNamePrefix()!=null){
-                        personName.setNamePrefix(StringUtils.removeSpecials(passangerDetail.getNamePrefix().getCode()));
+                        personName.setNamePrefix(passangerDetail.getNamePrefix().getCode());
                     }
-                    personName.setGivenName(StringUtils.removeSpecials(passangerDetail.getName()));
-                    personName.setSurname(StringUtils.removeSpecials(passangerDetail.getSurname()));
-                    if (!passangerDetail.getMiddleName().isEmpty()){
-                        personName.setMiddleName(StringUtils.removeSpecials(passangerDetail.getMiddleName()));
+                    passangerDetail.setName(StringUtils.removeSpecials(passangerDetail.getName()));
+                    passangerDetail.setSurname(StringUtils.removeSpecials(passangerDetail.getSurname()));
+                    
+                    personName.setGivenName(passangerDetail.getName());
+                    personName.setSurname(passangerDetail.getSurname());
+                    if (passangerDetail.getMiddleName()!=null && !passangerDetail.getMiddleName().isEmpty()){
+                        passangerDetail.setMiddleName(StringUtils.removeSpecials(passangerDetail.getMiddleName()));
+                        personName.setMiddleName(passangerDetail.getMiddleName());
                     }
 
                     airTraveler.setPersonName(personName);
