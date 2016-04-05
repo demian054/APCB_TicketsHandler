@@ -15,7 +15,8 @@ import com.google.gson.Gson;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  */
 @WebService(serviceName = "TicketsHandlerServices")
 public class TicketsHandlerServices {
-    private Logger log = Logger.getLogger(TicketsHandlerServices.class);
+    private Logger log = LogManager.getLogger(TicketsHandlerServices.class);
     private Gson gson = new Gson();
     /**
      * This is a sample web service operation
@@ -108,13 +109,29 @@ public class TicketsHandlerServices {
         return gson.toJson(response);
     }
     
-    @WebMethod(operationName = "ticketAirConsult")
-    public String ticketAirConsult(@WebParam(name = "request") String strRequest) {
+    @WebMethod(operationName = "ticketAirConsultTickets")
+    public String ticketAirConsultTickets(@WebParam(name = "request") String strRequest) {
         Request request = new Request(strRequest); 
         Response response;
         try {
             APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
-            response = process.ticketAirConsult(request);
+            response = process.ticketAirConsultTickets(request);
+            
+        } catch (Exception e) {
+            response = new Response(request.getSesionId());
+            response.setMessage(new Message(MessagesTypeEnum.Error_AplicationErrorNotHandler));
+            log.error(response.getMessage().getMsgDesc(), e);
+        }
+        return gson.toJson(response);
+    }
+    
+    @WebMethod(operationName = "ticketAirConsultReserv")
+    public String ticketAirConsultReserv(@WebParam(name = "request") String strRequest) {
+        Request request = new Request(strRequest); 
+        Response response;
+        try {
+            APCBTicketsHandlerProcess process = new APCBTicketsHandlerProcess();
+            response = process.ticketAirConsultReserv(request);
             
         } catch (Exception e) {
             response = new Response(request.getSesionId());

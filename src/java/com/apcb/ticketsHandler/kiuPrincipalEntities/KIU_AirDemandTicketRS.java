@@ -82,7 +82,7 @@ public class KIU_AirDemandTicketRS {
 
     
     private UniqueId BookingReferenceID;
-    private TicketItemInfo TicketItemInfo;
+    private List<TicketItemInfo> TicketItemInfo;
 
     public Error getError() {
         return Error;
@@ -108,11 +108,11 @@ public class KIU_AirDemandTicketRS {
         this.BookingReferenceID = BookingReferenceID;
     }
 
-    public TicketItemInfo getTicketItemInfo() {
+    public List<TicketItemInfo> getTicketItemInfo() {
         return TicketItemInfo;
     }
     @XmlElement(name = "TicketItemInfo")
-    public void setTicketItemInfo(TicketItemInfo TicketItemInfo) {
+    public void setTicketItemInfo(List<TicketItemInfo> TicketItemInfo) {
         this.TicketItemInfo = TicketItemInfo;
     }
   

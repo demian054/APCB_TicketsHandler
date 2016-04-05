@@ -12,11 +12,12 @@ import com.apcb.ticketsHandler.kiuPrincipalEntities.KIUMainRequest;
 import com.apcb.utils.ticketsHandler.enums.CabinTypeEnum;
 import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
 import com.apcb.utils.xml.XmlParser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class KIU_Conection {
-    private final static Logger log = Logger.getLogger(KIU_Conection.class);
+    private Logger log = LogManager.getLogger(KIU_Conection.class);
     
     public <T> T send(Object avail, PropertiesReader prop, Class inObjClass, Class<T> outObjClass) throws Exception{
         

@@ -7,7 +7,6 @@
 package com.apcb.ticketsHandler.process;
 
 
-import com.apcb.ticketsHandler.kiuEntities.Verification;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_CancelRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirAvailRS;
@@ -28,17 +27,22 @@ import com.apcb.ticketsHandler.utils.KUIXmlExamples;
 import com.apcb.utils.entities.Message;
 import com.apcb.utils.utils.PropertiesReader;
 import com.apcb.utils.entities.Request;
+import com.apcb.utils.entities.RequestTicket;
 import com.apcb.utils.entities.Response;
+import com.apcb.utils.entities.ResponseTicket;
 import com.apcb.utils.paymentHandler.entities.APCB_PayMain;
+import com.apcb.utils.ticketsHandler.entities.APCB_Passenger;
+import com.apcb.utils.ticketsHandler.entities.APCB_PassengerDetail;
 import com.apcb.utils.ticketsHandler.enums.MessagesTypeEnum;
 import com.apcb.utils.ticketsHandler.entities.APCB_Travel;
+import com.apcb.utils.ticketsHandler.enums.PassangerTypeEnum;
 import com.apcb.utils.utils.HtmlTemplateReader;
 import com.apcb.utils.utils.PdfCreator;
 import com.apcb.utils.utils.QRGenerator;
 import com.google.gson.Gson;
 import java.io.IOException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -111,7 +115,7 @@ public class APCBTicketsHandlerProcess {
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
         APCB_Travel itinerary = request.getTravelInfo();
         
-        KIU_AirBookRQ kIU_AirBookRQ = KIUParserEntities.toAirBookRequest(itinerary, propKiu);
+        KIU_AirBookRQ kIU_AirBookRQ = KIUParserEntities.toAirBookRequest(itinerary, request.getPayMainInfo(), propKiu);
         KIU_Conection kIU_Conection = new KIU_Conection();
         propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirReservRS);
         KIU_AirBookRS kIU_AirBookRS;
@@ -169,10 +173,13 @@ public class APCBTicketsHandlerProcess {
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
         APCB_Travel itinerary = request.getTravelInfo();
         
-        KIU_CancelRQ kIU_CancelRQ = KIUParserEntities.toCancelRequest(itinerary, propKiu);
         KIU_Conection kIU_Conection = new KIU_Conection();
+        KIU_CancelRS kIU_CancelRS; 
+        RequestTicket requestTicket = new RequestTicket(request);
+        requestTicket.setBookingReferenceID(itinerary.getBookingReferenceID());
+        KIU_CancelRQ kIU_CancelRQ = KIUParserEntities.toCancelRequest(requestTicket, propKiu);
         propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirCancelRS);
-        KIU_CancelRS kIU_CancelRS;
+        
         try {
              kIU_CancelRS = kIU_Conection.send(kIU_CancelRQ, propKiu, KIU_CancelRQ.class, KIU_CancelRS.class);
         } catch (Exception e) {
@@ -185,47 +192,102 @@ public class APCBTicketsHandlerProcess {
             log.error(response.getMessage().getMsgDesc());
             return response;
         }
-        itinerary = KIUParserEntities.fromCancelResponse(itinerary, kIU_CancelRS, propKiu);
+          
+        for(APCB_Passenger passengerClass :itinerary.getPassangers()){
+            for (APCB_PassengerDetail passengerDetail:passengerClass.getPassengersDetail()){
+                if (passengerDetail.getTicketNumber()!=null && !passengerDetail.getTicketNumber().isEmpty()){
+                    
+                    requestTicket.setPassengerDetail(passengerDetail);
+                    kIU_CancelRQ = KIUParserEntities.toCancelRequest(requestTicket, propKiu);
+                    propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirCancelRS);
+
+                    try {
+                         kIU_CancelRS = kIU_Conection.send(kIU_CancelRQ, propKiu, KIU_CancelRQ.class, KIU_CancelRS.class);
+                    } catch (Exception e) {
+                        response.setMessage(new Message(MessagesTypeEnum.ErrorAccessExt_Kiu));
+                        log.error(response.getMessage().getMsgDesc(), e);
+                        return response;
+                    }
+                     if (kIU_CancelRS.getError()!=null){
+                        response.setMessage(new Message(kIU_CancelRS.getError().getErrorCode(),kIU_CancelRS.getError().getErrorMsg()));
+                        log.error(response.getMessage().getMsgDesc());
+                        return response;
+                    }
+                    itinerary = KIUParserEntities.fromCancelResponse(itinerary, kIU_CancelRS, propKiu);
+                }    
+            }
+        } 
+         
         log.info(new Gson().toJson(itinerary));
         response.setTravelInfo(itinerary);
         response.setPayMainInfo(request.getPayMainInfo());
         return response; 
     }
     
-     public Response ticketAirConsult(Request request) throws IOException, Exception {
+    
+    public Response ticketAirConsultReserv(Request request) throws IOException, Exception {
+        
         Response response = new Response(request.getSesionId());
         PropertiesReader propKiu = new PropertiesReader("KiuConnection");
         APCB_Travel itinerary = request.getTravelInfo();
-        
-        KIU_TravelItineraryReadRQ kIU_TravelItineraryReadRQ = KIUParserEntities.toConsultRequest(itinerary, propKiu);
+
         KIU_Conection kIU_Conection = new KIU_Conection();
-        if (itinerary.getTicketNumber()!=null && !itinerary.getTicketNumber().isEmpty()){
-            propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirConsultTicketRS);
-        } else {
-            propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirConsultbookingReferenceRS);
-        }
-        // se agrega el correo para que envie el Boleto.
-        Verification verification = new Verification();
-        verification.setEmail(request.getPayMainInfo().getEmailPayer());
-        kIU_TravelItineraryReadRQ.setVerification(verification);
-          
+        
+        propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirConsultbookingReferenceRS);
         KIU_TravelItineraryRS kIU_TravelItineraryRS;
+        KIU_TravelItineraryReadRQ kIU_TravelItineraryReadRQ = KIUParserEntities.toConsultReservRequest(itinerary, propKiu);  
+            
         try {
-             kIU_TravelItineraryRS = kIU_Conection.send(kIU_TravelItineraryReadRQ, propKiu, KIU_TravelItineraryReadRQ.class, KIU_TravelItineraryRS.class);
+            kIU_TravelItineraryRS = kIU_Conection.send(kIU_TravelItineraryReadRQ, propKiu, KIU_TravelItineraryReadRQ.class, KIU_TravelItineraryRS.class);
         } catch (Exception e) {
-            response.setMessage(new Message(MessagesTypeEnum.ErrorAccessExt_Kiu));
-            log.error(response.getMessage().getMsgDesc(), e);
-            return response;
+           response.setMessage(new Message(MessagesTypeEnum.ErrorAccessExt_Kiu));
+           log.error(response.getMessage().getMsgDesc(), e);
+           return response;
         }
         if (kIU_TravelItineraryRS.getError()!=null){
-            response.setMessage(new Message(kIU_TravelItineraryRS.getError().getErrorCode(),kIU_TravelItineraryRS.getError().getErrorMsg()));
-            log.error(response.getMessage().getMsgDesc());
-            return response;
+           response.setMessage(new Message(kIU_TravelItineraryRS.getError().getErrorCode(),kIU_TravelItineraryRS.getError().getErrorMsg()));
+           log.error(response.getMessage().getMsgDesc());
+           return response;
         }
-        itinerary = KIUParserEntities.fromConsultResponse(itinerary, kIU_TravelItineraryRS, propKiu);
+        
+        itinerary = KIUParserEntities.fromConsultReservResponse(itinerary, kIU_TravelItineraryRS, propKiu);
         log.info(new Gson().toJson(itinerary));
+        response.setTravelInfo(itinerary);
+        response.setPayMainInfo(request.getPayMainInfo());
+        return response;       
+    }
+    
+    public Response ticketAirConsultTickets(Request request) throws IOException, Exception {
+        Response response = new Response(request.getSesionId());
+        PropertiesReader propKiu = new PropertiesReader("KiuConnection");
+        APCB_Travel itinerary = request.getTravelInfo();
+
+        KIU_Conection kIU_Conection = new KIU_Conection();
         
-        
+        RequestTicket requestTicket = new RequestTicket(request);
+        propKiu.setProperty("SimulateResponseMsg", KUIXmlExamples.strXmlAirConsultTicketRS);
+        for(APCB_Passenger passengerClass :request.getTravelInfo().getPassangers()){
+            for (APCB_PassengerDetail passengerDetail:passengerClass.getPassengersDetail()){
+                requestTicket.setPassengerDetail(passengerDetail);
+                KIU_TravelItineraryReadRQ kIU_TravelItineraryReadRQ = KIUParserEntities.toConsultTicketRequest(requestTicket, propKiu);
+                KIU_TravelItineraryRS kIU_TravelItineraryRS;
+                try {
+                    kIU_TravelItineraryRS = kIU_Conection.send(kIU_TravelItineraryReadRQ, propKiu, KIU_TravelItineraryReadRQ.class, KIU_TravelItineraryRS.class);
+                    // esto comprueba que el ticket se devuelva
+                    log.info(kIU_TravelItineraryRS.getItineraryInfo().getTicketing().getTicketAdvisory());
+                } catch (Exception e) {
+                   response.setMessage(new Message(MessagesTypeEnum.ErrorAccessExt_Kiu));
+                   log.error(response.getMessage().getMsgDesc(), e);
+                   return response;
+                }
+                if (kIU_TravelItineraryRS.getError()!=null){
+                   response.setMessage(new Message(kIU_TravelItineraryRS.getError().getErrorCode(),kIU_TravelItineraryRS.getError().getErrorMsg()));
+                   log.error(response.getMessage().getMsgDesc());
+                   return response;
+                }
+
+            } 
+        }
         
         StringBuilder fileName = new StringBuilder();
         fileName.append(propKiu.getProperty("Target",false)).append("_");
@@ -233,7 +295,7 @@ public class APCBTicketsHandlerProcess {
             fileName.append("Simulate_");
         }
         fileName.append(request.getSesionId()).append("_");
-        fileName.append(request.getTravelInfo().getTicketNumber());
+        fileName.append(request.getTravelInfo().getBookingReferenceID());
         
         
         String imagePathQR =  propKiu.getProperty("QRGeneratedPath",false)+fileName+".png";
@@ -251,24 +313,16 @@ public class APCBTicketsHandlerProcess {
         }
 
         try {
-
-            if (itinerary.getTicket()!=null && !itinerary.getTicket().isEmpty()){
-                QRGenerator.generate(filePathQR, webPathPDF, QRSize);
-  
-                itinerary.setqRCode(imagePathQR);
-            } 
+            QRGenerator.generate(filePathQR, webPathPDF, QRSize);
+            itinerary.setqRCode(imagePathQR);
         } catch(Exception e) {
             log.error("Cant Create Validation QRCode",e);
             throw new Exception("Cant Create Validation QRCode");
         } 
-        
-        
+
          try {
-             
             itinerary.setPdfLink(webPathPDF);
-            if (itinerary.getTicket()!=null && !itinerary.getTicket().isEmpty()){
-                itinerary.setTicket(PdfCreator.createPdfTicket(request, propKiu, fileName.toString()));
-            } 
+            itinerary.setBooking(PdfCreator.createPdfTicket(request, propKiu, fileName.toString()));
         } catch(Exception e) {
             log.error("Cant write Voucher File",e);
             throw new Exception("Cant write Voucher File");

@@ -12,16 +12,17 @@ import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirPriceRQ;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_AirPriceRS;
 import com.apcb.ticketsHandler.kiuPrincipalEntities.KIU_TravelItineraryReadRQ;
 import com.apcb.utils.xml.XmlParser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Demian
  */
 public class TestMaping {
-    private final static Logger log = Logger.getLogger(TestMaping.class);
+    private static Logger log = LogManager.getLogger(TestMaping.class);
+    
     public static void main(String[] args) throws Exception {
-   
     log.info("KIU_AirAvail RQ/RS ");
         
         KIU_AirAvailRQ kIU_AirAvailRQ = (KIU_AirAvailRQ) XmlParser.fromXML(KUIXmlExamples.strXmlAirAvailRQ, KIU_AirAvailRQ.class);
